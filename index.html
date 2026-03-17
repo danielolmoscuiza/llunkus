@@ -6,14 +6,19 @@
     <title>LLUNK´US - Película</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-      /* --- PALETA DE COLORES Y VARIABLES ACTUALIZADA --- */
+        /* --- PALETA DE COLORES Y VARIABLES ACTUALIZADA --- */
         :root {
-            --bg-general: #2a231b; /* NUEVO FONDO OSCURO */
+            --bg-general: #2a231b; 
             --titulos: #ca7d45;
             --sub-btn: #d8ab5e;
-            --texto: #d7c3a5; /* Texto claro para contrastar con el fondo oscuro */
-            --bg-secundario: #1e1813; /* Footer ligeramente más oscuro */
-            --header-bg: rgba(42, 35, 27, 0.9); /* Header oscuro semi-transparente */
+            --texto: #d7c3a5; 
+            --bg-secundario: #1e1813; 
+            --header-bg: rgba(42, 35, 27, 0.9); 
+        }
+
+        /* --- OPTIMIZACIÓN DE SCROLL FLUIDO --- */
+        html {
+            scroll-behavior: smooth; /* Solo se aplica aquí */
         }
 
         /* --- ESTILOS GENERALES --- */
@@ -21,21 +26,21 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            scroll-behavior: smooth;
+            /* Se eliminó scroll-behavior de aquí por rendimiento */
         }
 
         body {
             font-family: 'Marbold', 'Montserrat', sans-serif;
-            background-color: #2a231b; /* Fallback directo */
             background-color: var(--bg-general);
             color: var(--texto);
             line-height: 1.6;
+            overflow-x: hidden; /* Evita scrolls horizontales fantasma */
         }
 
         h1, h2, h3 { color: var(--titulos); }
 
         section {
-            padding: 100px 20px 80px; /* Margen superior para el header */
+            padding: 100px 20px 80px; 
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -51,13 +56,15 @@
             padding: 15px 40px;
             background: var(--header-bg);
             z-index: 100;
-            transition: all 0.3s ease;
             box-shadow: 0 2px 20px rgba(0,0,0,0.5);
             backdrop-filter: blur(5px);
+            /* OPTIMIZACIÓN GPU: Obliga a usar aceleración por hardware para que no se tranque al scrollear */
+            transform: translateZ(0); 
+            will-change: transform;
         }
 
         .logo img {
-            height: 40px; /* Ajusta la altura de tu logo aquí */
+            height: 40px; 
             width: auto;
             display: block;
         }
@@ -99,10 +106,11 @@
         #home {
             height: 100vh;
             width: 100%;
-            max-width: 100%; /* Ocupa toda la pantalla */
+            max-width: 100%; 
             padding: 0;
             position: relative;
             overflow: hidden;
+            background-color: #111; /* Color de fondo por si tarda en cargar la imagen */
         }
 
         .slider-container {
@@ -122,13 +130,15 @@
             width: 100%; height: 100%;
             object-fit: cover;
             opacity: 0;
-            transition: opacity 1.5s ease-in-out; /* Transición suave de 1.5 segundos */
+            transition: opacity 1.5s ease-in-out; 
             z-index: 1;
+            /* OPTIMIZACIÓN GPU: Hace que la transición de imágenes sea mucho más suave */
+            will-change: opacity;
+            backface-visibility: hidden;
         }
 
         .slide.active { opacity: 1; z-index: 2; }
 
-        /* Capa oscura sutil sobre el slider para que el header resalte más si la foto es muy clara */
         .slider-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to bottom, rgba(42,35,27,0.7) 0%, rgba(42,35,27,0) 20%, rgba(42,35,27,0) 80%, rgba(42,35,27,1) 100%);
@@ -153,22 +163,22 @@
         }
         .video-grid.active { display: grid; }
         .video-item {
-    background: #000;
-    aspect-ratio: 16/9;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    border: 1px solid var(--sub-btn);
-    overflow: hidden; /* <--- IMPORTANTE: Esto hará que el video respete las esquinas redondeadas */
-}
+            background: #000;
+            aspect-ratio: 16/9;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            border: 1px solid var(--sub-btn);
+            overflow: hidden; 
+        }
 
-.video-item iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
+        .video-item iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
 
         /* --- 3. SECCIÓN DE FOTOS --- */
         .photo-grid {
@@ -185,201 +195,173 @@
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(42, 35, 27, 0.95); z-index: 1000;
             justify-content: center; align-items: center;
+            /* OPTIMIZACIÓN: Acelera la apertura del lightbox */
+            will-change: opacity;
         }
         #lightbox img { max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
         #lightbox.active { display: flex; }
 
         /* --- 4. SECCIÓN DE TEXTO (ESTILO DOSSIER) --- */
-.dossier-layout {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    margin-top: 30px;
-}
+        .dossier-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin-top: 30px;
+        }
 
-.dossier-item {
-    max-width: 65%; /* El texto no ocupa todo el ancho para dar aire al diseño */
-    font-size: 1.1rem;
-    line-height: 1.8;
-}
+        .dossier-item {
+            max-width: 65%; 
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
 
-/* Párrafos a la izquierda */
-.dossier-item.left {
-    align-self: flex-start;
-    text-align: left;
-    border-left: 2px solid var(--titulos);
-    padding-left: 20px;
-}
+        .dossier-item.left {
+            align-self: flex-start;
+            text-align: left;
+            border-left: 2px solid var(--titulos);
+            padding-left: 20px;
+        }
 
-/* Párrafos a la derecha */
-.dossier-item.right {
-    align-self: flex-end;
-    text-align: right;
-    border-right: 2px solid var(--titulos);
-    padding-right: 20px;
-}
+        .dossier-item.right {
+            align-self: flex-end;
+            text-align: right;
+            border-right: 2px solid var(--titulos);
+            padding-right: 20px;
+        }
 
-/* Párrafo destacado al centro (Final de sinopsis) */
-.dossier-item.full {
-    max-width: 100%;
-    align-self: center;
-    text-align: center;
-    font-style: italic;
-    color: var(--sub-btn);
-}
-/* --- ESTILO TESTIMONIALES (CENTRADOS) --- */
-.testimonials-container {
-    max-width: 900px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 80px; /* Mucho espacio entre citas para que cada una respire */
-}
+        .dossier-item.full {
+            max-width: 100%;
+            align-self: center;
+            text-align: center;
+            font-style: italic;
+            color: var(--sub-btn);
+        }
 
-.testimonial-item {
-    text-align: center;
-    position: relative;
-    padding: 20px;
-}
+        /* --- ESTILO TESTIMONIALES --- */
+        .testimonials-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 80px; 
+        }
 
-/* El texto de la cita: Grande y llamativo */
-.quote-text {
-    font-size: 1.8rem; /* Tamaño grande */
-    color: var(--texto);
-    font-weight: 300;
-    line-height: 1.4;
-    margin-bottom: 15px;
-    text-transform: uppercase; /* Para que se sienta como un grito de prensa */
-    letter-spacing: 1px;
-}
+        .testimonial-item {
+            text-align: center;
+            position: relative;
+            padding: 20px;
+        }
 
-/* El autor: Pequeño y elegante */
-.quote-author {
-    font-size: 0.9rem;
-    color: var(--sub-btn);
-    letter-spacing: 3px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
+        .quote-text {
+            font-size: 1.8rem; 
+            color: var(--texto);
+            font-weight: 300;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
 
-/* Efecto visual de comillas decorativas */
-.testimonial-item::before {
-    content: "“";
-    position: absolute;
-    top: -40px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 5rem;
-    color: rgba(202, 125, 69, 0.2); /* Color cobre muy transparente */
-    font-family: serif;
-}
+        .quote-author {
+            font-size: 0.9rem;
+            color: var(--sub-btn);
+            letter-spacing: 3px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
 
-/* Estilo para la cita de 'Una Llunk'u' que quiere cancelar la peli */
-.special-alert .quote-text {
-    color: #ff4444; /* Rojo para resaltar la ironía */
-}
+        .testimonial-item::before {
+            content: "“";
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 5rem;
+            color: rgba(202, 125, 69, 0.2); 
+            font-family: serif;
+        }
 
-/* --- ESTILO DE CRÉDITOS CINEMATOGRÁFICOS --- */
-#equipo {
-    padding: 80px 20px;
-    background-color: var(--bg-secundario); /* Un poco más oscuro para que resalten los nombres */
-}
+        .special-alert .quote-text {
+            color: #ff4444; 
+        }
 
-.crew-category {
-    text-align: center;
-    margin-bottom: 60px;
-}
+        /* --- ESTILO DE CRÉDITOS CINEMATOGRÁFICOS --- */
+        #equipo {
+            padding: 80px 20px;
+            background-color: var(--bg-secundario); 
+        }
 
-.role-title {
-    font-size: 0.9rem;
-    color: var(--sub-btn);
-    letter-spacing: 5px;
-    margin-bottom: 20px;
-}
+        .crew-category {
+            text-align: center;
+            margin-bottom: 60px;
+        }
 
-.names-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: var(--texto);
-}
+        .role-title {
+            font-size: 0.9rem;
+            color: var(--sub-btn);
+            letter-spacing: 5px;
+            margin-bottom: 20px;
+        }
 
-.crew-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 40px;
-    max-width: 1000px;
-    margin: 0 auto;
-    text-align: center;
-}
+        .names-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--texto);
+        }
 
-.crew-item {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
+        .crew-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
 
-.crew-item .role {
-    font-size: 0.75rem;
-    color: var(--sub-btn);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-}
+        .crew-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
 
-.crew-item .name {
-    font-size: 1.1rem;
-    color: var(--texto);
-    font-weight: 500;
-}
+        .crew-item .role {
+            font-size: 0.75rem;
+            color: var(--sub-btn);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
 
-.director-feature {
-    text-align: center;
-    margin-top: 80px;
-    border-top: 1px solid rgba(216, 171, 94, 0.2);
-    padding-top: 40px;
-}
+        .crew-item .name {
+            font-size: 1.1rem;
+            color: var(--texto);
+            font-weight: 500;
+        }
 
-.director-feature .role {
-    display: block;
-    font-size: 0.8rem;
-    letter-spacing: 6px;
-    color: var(--sub-btn);
-    margin-bottom: 10px;
-}
+        .director-feature {
+            text-align: center;
+            margin-top: 80px;
+            border-top: 1px solid rgba(216, 171, 94, 0.2);
+            padding-top: 40px;
+        }
 
-.director-feature .name {
-    font-size: 2rem;
-    font-weight: bold;
-    color: var(--titulos);
-    text-transform: uppercase;
-}
+        .director-feature .role {
+            display: block;
+            font-size: 0.8rem;
+            letter-spacing: 6px;
+            color: var(--sub-btn);
+            margin-bottom: 10px;
+        }
 
-/* Ajuste para móviles */
-@media (max-width: 768px) {
-    .names-list { font-size: 1.1rem; }
-    .director-feature .name { font-size: 1.5rem; }
-}
-
-/* Ajuste para móviles */
-@media (max-width: 768px) {
-    .quote-text {
-        font-size: 1.4rem;
-    }
-}
-
-/* Adaptación para celulares */
-@media (max-width: 768px) {
-    .dossier-item {
-        max-width: 100%;
-        text-align: left !important;
-        align-self: flex-start !important;
-        border-right: none !important;
-        border-left: 2px solid var(--titulos) !important;
-    }
-}
+        .director-feature .name {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--titulos);
+            text-transform: uppercase;
+        }
 
         /* --- 5. SECCIÓN DE EQUIPO --- */
         .team-grid {
@@ -398,9 +380,40 @@
 
         /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
-            header { padding: 15px 20px; }
-            nav { display: none; } /* En móvil se ocultaría a favor de un menú hamburguesa */
+            header { 
+                padding: 15px 20px; 
+                /* OPTIMIZACIÓN: Quitamos el blur en móvil porque destruye el rendimiento del scroll */
+                backdrop-filter: none;
+                background: rgba(30, 24, 19, 0.98); /* Color más sólido para compensar la falta de blur */
+            }
+            nav { display: none; } 
             section { padding: 80px 20px 40px; }
+            
+            .names-list { font-size: 1.1rem; }
+            .director-feature .name { font-size: 1.5rem; }
+            .quote-text { font-size: 1.4rem; }
+
+            .dossier-layout {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                gap: 25px;
+            }
+            .dossier-item {
+                width: 100% !important;
+                max-width: 100% !important;
+                text-align: left !important;
+                align-self: flex-start !important;
+                border-right: none !important;
+                border-left: 2px solid var(--titulos) !important;
+                padding-right: 0 !important;
+                padding-left: 15px !important;
+            }
+            .dossier-item.full {
+                text-align: center !important;
+                border-left: none !important;
+                padding-left: 0 !important;
+            }
         }
     </style>
 </head>
@@ -444,199 +457,200 @@
         </section>
 
         <section id="videos">
-    <h2 data-i18n="sec_videos">Videos</h2>
-    <div class="tabs">
-        <button onclick="showVideoTab(this, 'trailers')" class="active" data-i18n="tab_trailers">Trailers</button>
-        <button onclick="showVideoTab(this, 'pelicula')" data-i18n="tab_movie">Película</button>
-        <button onclick="showVideoTab(this, 'adelantos')" data-i18n="tab_previews">Adelantos</button>
-    </div>
-    
-    <div id="tab-trailers" class="video-grid active">
-        <div class="video-item">
-            <iframe 
-                src="https://drive.google.com/file/d/1tg0W6JGZCNcKz-aKxKVVA6QSQEoOUHTW/preview" 
-                width="100%" 
-                height="100%" 
-                allow="autoplay" 
-                allowfullscreen>
-            </iframe>
-        </div>
-        <div class="video-item">
-            <p style="color:var(--sub-btn)">Próximamente Trailer 2</p>
-        </div>
-    </div>
+            <h2 data-i18n="sec_videos">Videos</h2>
+            <div class="tabs">
+                <button onclick="showVideoTab(this, 'trailers')" class="active" data-i18n="tab_trailers">Trailers</button>
+                <button onclick="showVideoTab(this, 'pelicula')" data-i18n="tab_movie">Película</button>
+                <button onclick="showVideoTab(this, 'adelantos')" data-i18n="tab_previews">Adelantos</button>
+            </div>
+            
+            <div id="tab-trailers" class="video-grid active">
+                <div class="video-item">
+                    <iframe 
+                        src="https://drive.google.com/file/d/1tg0W6JGZCNcKz-aKxKVVA6QSQEoOUHTW/preview" 
+                        width="100%" 
+                        height="100%" 
+                        allow="autoplay" 
+                        allowfullscreen
+                        loading="lazy"> </iframe>
+                </div>
+                <div class="video-item">
+                    <p style="color:var(--sub-btn)">Próximamente Trailer 2</p>
+                </div>
+            </div>
 
-    <div id="tab-pelicula" class="video-grid">
-        <div class="video-item">Clip 1</div>
-        <div class="video-item">Clip 2</div>
-    </div>
+            <div id="tab-pelicula" class="video-grid">
+                <div class="video-item">Clip 1</div>
+                <div class="video-item">Clip 2</div>
+            </div>
 
-    <div id="tab-adelantos" class="video-grid">
-        <div class="video-item">Making Of</div>
-    </div>
-</section>
+            <div id="tab-adelantos" class="video-grid">
+                <div class="video-item">Making Of</div>
+            </div>
+        </section>
 
         <section id="fotos">
             <h2 data-i18n="sec_fotos">Fotos</h2>
             <div class="photo-grid">
-                <img src="assets/fotos/imagen1.webp" alt="Foto 1" onclick="openLightbox(this.src)">
-                <img src="assets/fotos/imagen2.webp" alt="Foto 2" onclick="openLightbox(this.src)">
-                <img src="assets/fotos/imagen3.webp" alt="Foto 3" onclick="openLightbox(this.src)">
-                <img src="assets/fotos/imagen4.webp" alt="Foto 4" onclick="openLightbox(this.src)">
-                <img src="assets/fotos/imagen5.webp" alt="Foto 5" onclick="openLightbox(this.src)">
-                <img src="assets/fotos/imagen6.webp" alt="Foto 6" onclick="openLightbox(this.src)">
+                <img src="assets/fotos/imagen1.webp" alt="Foto 1" onclick="openLightbox(this.src)" loading="lazy">
+                <img src="assets/fotos/imagen2.webp" alt="Foto 2" onclick="openLightbox(this.src)" loading="lazy">
+                <img src="assets/fotos/imagen3.webp" alt="Foto 3" onclick="openLightbox(this.src)" loading="lazy">
+                <img src="assets/fotos/imagen4.webp" alt="Foto 4" onclick="openLightbox(this.src)" loading="lazy">
+                <img src="assets/fotos/imagen5.webp" alt="Foto 5" onclick="openLightbox(this.src)" loading="lazy">
+                <img src="assets/fotos/imagen6.webp" alt="Foto 6" onclick="openLightbox(this.src)" loading="lazy">
             </div>
         </section>
 
         <section id="texto">
-    <h2 data-i18n="sec_sinopsis">SINOPSIS</h2>
-    
-    <div class="dossier-layout">
-        <div class="dossier-item left">
-            <p>LA PAZ, BOLIVIA, AÑO 2049.</p>
-        </div>
+            <h2 data-i18n="sec_sinopsis">SINOPSIS</h2>
+            
+            <div class="dossier-layout">
+                <div class="dossier-item left">
+                    <p data-i18n="syn_p1">LA PAZ, BOLIVIA, AÑO 2049.</p>
+                </div>
 
-        <div class="dossier-item right">
-            <p>LAS COSAS SON MUY SIMILARES, PERO UN POCO MÁS CAÓTICAS, Y TODO POR CULPA DE ESTOS MALDITOS JÓVENES QUE NO RESPETAN A SUS VIEJOS. MALDITOS, MALDITOS TIEMPOS QUE NOS HA TOCADO VIDIR.</p>
-        </div>
+                <div class="dossier-item right">
+                    <p data-i18n="syn_p2">LAS COSAS SON MUY SIMILARES, PERO UN POCO MÁS CAÓTICAS, Y TODO POR CULPA DE ESTOS MALDITOS JÓVENES QUE NO RESPETAN A SUS VIEJOS. MALDITOS, MALDITOS TIEMPOS QUE NOS HA TOCADO VIDIR.</p>
+                </div>
 
-        <div class="dossier-item left">
-            <p>DE ALGUNA FORMA SE HAN SOLUCIONADO LAS CRISIS QUE AQUEJABAN AL PAÍS. PERO SIGUEN SUELTOS LOS LLUNK'US: LOS FUNCIONARIOS DE CIVIL SEMBRANDO EL CAOS. Y SIGUEN SUELTOS A PESAR DE QUE YA NO RESPETAN NI A SUS PROPIOS SUPERIORES, Y SON Más BIEN KUSILLOS SANGUINARIOS.</p>
-        </div>
+                <div class="dossier-item left">
+                    <p data-i18n="syn_p3">DE ALGUNA FORMA SE HAN SOLUCIONADO LAS CRISIS QUE AQUEJABAN AL PAÍS. PERO SIGUEN SUELTOS LOS LLUNK'US: LOS FUNCIONARIOS DE CIVIL SEMBRANDO EL CAOS. Y SIGUEN SUELTOS A PESAR DE QUE YA NO RESPETAN NI A SUS PROPIOS SUPERIORES, Y SON Más BIEN KUSILLOS SANGUINARIOS.</p>
+                </div>
 
-        <div class="dossier-item right">
-            <p>LA PELÍCULA LLUNK'US! SIGUE LAS EXPERIENCIAS DE UN GRUPO DE JÓVENES QUE SE DEDICAN A DEAMBULAR EN LAS NOCHES DEL FUTURO GENERANDO ZOZOBRA ENTRE LA POBLACIÓN EMBORRACHADA: CUATRO COLEGIALES QUE PUEDEN DISFRAZARSE TANTO DE RACISTAS SANGUINARIOS DEL KKK COMO DE COMUNARIES INDÍGENES, SOLO PARA BURLARSE DE LOS TERRORES COLECTIVOS DE LOS CIUDADANOS. </p>
-        </div>
+                <div class="dossier-item right">
+                    <p data-i18n="syn_p4">LA PELÍCULA LLUNK'US! SIGUE LAS EXPERIENCIAS DE UN GRUPO DE JÓVENES QUE SE DEDICAN A DEAMBULAR EN LAS NOCHES DEL FUTURO GENERANDO ZOZOBRA ENTRE LA POBLACIÓN EMBORRACHADA: CUATRO COLEGIALES QUE PUEDEN DISFRAZARSE TANTO DE RACISTAS SANGUINARIOS DEL KKK COMO DE COMUNARIES INDÍGENES, SOLO PARA BURLARSE DE LOS TERRORES COLECTIVOS DE LOS CIUDADANOS.</p>
+                </div>
 
-        <div class="dossier-item left">
-            <p>LA PELÍCULA LLUNK'US ES ADEMÁS UNA REVERSIÓN DE LA NOVELA UNA NARANJA MECÁNICA DEL AUTOR ANTHONY BURGESS, AUNQUE ES UNA VERSIÓN MUY DISTINTA DE DISTINTAS ADAPTACIONES QUE SE HICIERON, PUES SU CONTEXTO ES LA FIESTA DE HALLOWEEN FOLKLÓRICO, DONDE LAS CRIATURAS DE LA DIABLADA SE HAN MEZCLADO CON LOS PERSONAJES DE LAS PELÍCULAS DE TERROR.</p>
-        </div>
+                <div class="dossier-item left">
+                    <p data-i18n="syn_p5">LA PELÍCULA LLUNK'US ES ADEMÁS UNA REVERSIÓN DE LA NOVELA UNA NARANJA MECÁNICA DEL AUTOR ANTHONY BURGESS, AUNQUE ES UNA VERSIÓN MUY DISTINTA DE DISTINTAS ADAPTACIONES QUE SE HICIERON, PUES SU CONTEXTO ES LA FIESTA DE HALLOWEEN FOLKLÓRICO, DONDE LAS CRIATURAS DE LA DIABLADA SE HAN MEZCLADO CON LOS PERSONAJES DE LAS PELÍCULAS DE TERROR.</p>
+                </div>
 
-        <div class="dossier-item right">
-            <p>LA PELÍCULA LLUNK'US ES UNA EXPERIENCIA AUDIOVISUAL QUE EXPLORA UNA CIUDAD FUTURISTA DECADENTE Y SIEMPRE CHISTOSA, SIEMPRE IRÓNICA. UNA CIUDAD TOMADA POR UN ESTADO PARAMILITARIZADO, TODA BULLENTE DE MÁSCARAS, TODA CONSUMIBLE, TODA DESACRABLE.</p>
-        </div>
+                <div class="dossier-item right">
+                    <p data-i18n="syn_p6">LA PELÍCULA LLUNK'US ES UNA EXPERIENCIA AUDIOVISUAL QUE EXPLORA UNA CIUDAD FUTURISTA DECADENTE Y SIEMPRE CHISTOSA, SIEMPRE IRÓNICA. UNA CIUDAD TOMADA POR UN ESTADO PARAMILITARIZADO, TODA BULLENTE DE MÁSCARAS, TODA CONSUMIBLE, TODA DESACRABLE.</p>
+                </div>
 
-        <div class="dossier-item full">
-            <p>FINALMENTE, LLUNK'US!, COMO DISPOSITIVO, ES UNA CELEBRACIÓN ALUCINADA DE LOS BROTES DE FUTURO QUE HABITAN EN NUESTRO ACTUAL CAOS. Y ES UNA HISTORIA DE AMIGOS CON LAS FEROMONAS A FLOR DE PIEL.</p>
-        </div>
-    </div>
+                <div class="dossier-item full">
+                    <p data-i18n="syn_p7">FINALMENTE, LLUNK'US!, COMO DISPOSITIVO, ES UNA CELEBRACIÓN ALUCINADA DE LOS BROTES DE FUTURO QUE HABITAN EN NUESTRO ACTUAL CAOS. Y ES UNA HISTORIA DE AMIGOS CON LAS FEROMONAS A FLOR DE PIEL.</p>
+                </div>
+            </div>
 
-    <hr style="border: 0; border-top: 1px solid var(--titulos); margin: 60px 0;">
+            <hr style="border: 0; border-top: 1px solid var(--titulos); margin: 60px 0;">
 
-    <section id="criticas">
-    <h2 data-i18n="sec_criticas" style="text-align: left; margin-bottom: 60px;">CITAS CRÍTICAS</h2>
-    
-    <div class="testimonials-container">
-        <div class="testimonial-item">
-            <p class="quote-text">"ESE FUTURO PARECE DEL PASADO"</p>
-            <p class="quote-author">— ÓSCAR SORIA</p>
-        </div>
+            <section id="criticas">
+                <h2 data-i18n="sec_criticas" style="text-align: left; margin-bottom: 60px;">CITAS CRÍTICAS</h2>
+                
+                <div class="testimonials-container">
+                    <div class="testimonial-item">
+                        <p class="quote-text" data-i18n="quote_1">"ESE FUTURO PARECE DEL PASADO"</p>
+                        <p class="quote-author">— ÓSCAR SORIA</p>
+                    </div>
 
-        <div class="testimonial-item">
-            <p class="quote-text">"DOPAMINA, DOPAMINA, DOPAMINA... OH ASBESTOS!"</p>
-            <p class="quote-author">— FAUSTO REINAGA</p>
-        </div>
+                    <div class="testimonial-item">
+                        <p class="quote-text" data-i18n="quote_2">"DOPAMINA, DOPAMINA, DOPAMINA... OH ASBESTOS!"</p>
+                        <p class="quote-author">— FAUSTO REINAGA</p>
+                    </div>
 
-        <div class="testimonial-item">
-            <p class="quote-text">"LA INFINITA GRACIA DEL BOLIVIANO PROMEDIO EN EL FUTURISMO DE NUESTRAS CIUDADES DE PIEDRA"</p>
-            <p class="quote-author">— FRANZ TAMAYO</p>
-        </div>
+                    <div class="testimonial-item">
+                        <p class="quote-text" data-i18n="quote_3">"LA INFINITA GRACIA DEL BOLIVIANO PROMEDIO EN EL FUTURISMO DE NUESTRAS CIUDADES DE PIEDRA"</p>
+                        <p class="quote-author">— FRANZ TAMAYO</p>
+                    </div>
 
-        <div class="testimonial-item">
-            <p class="quote-text">"EL CEMENTERIO DE ELEFANTES PARA JOVENCITAS EN TUSSI"</p>
-            <p class="quote-author">— SAMUEL DM</p>
-        </div>
+                    <div class="testimonial-item">
+                        <p class="quote-text" data-i18n="quote_4">"EL CEMENTERIO DE ELEFANTES PARA JOVENCITAS EN TUSSI"</p>
+                        <p class="quote-author">— SAMUEL DM</p>
+                    </div>
 
-        <div class="testimonial-item">
-            <p class="quote-text">"QUIÉN DIRÍA QUE LAS PERRAS TIENEN OPINIONES POLÍTICAS?"</p>
-            <p class="quote-author">— WINNER ZEBALLOS</p>
-        </div>
+                    <div class="testimonial-item">
+                        <p class="quote-text" data-i18n="quote_5">"QUIÉN DIRÍA QUE LAS PERRAS TIENEN OPINIONES POLÍTICAS?"</p>
+                        <p class="quote-author">— WINNER ZEBALLOS</p>
+                    </div>
 
-        <div class="testimonial-item">
-            <p class="quote-text">"ALCOHOL CAIMÁN CON CHICOLAC: EL BAILEYS ANDINO. UNA DE LAS RECETAS QUE ME LLEVO DE ESTA PELÍCULA."</p>
-            <p class="quote-author">— JORGE ZANJINEZ</p>
-        </div>
+                    <div class="testimonial-item">
+                        <p class="quote-text" data-i18n="quote_6">"ALCOHOL CAIMÁN CON CHICOLAC: EL BAILEYS ANDINO. UNA DE LAS RECETAS QUE ME LLEVO DE ESTA PELÍCULA."</p>
+                        <p class="quote-author">— JORGE ZANJINEZ</p>
+                    </div>
 
-        <div class="testimonial-item">
-            <p class="quote-text">"NUNCA SER UN LLUNK'U DEL OFICIALISMO SE HA VISTO MÁS COOL, YA QUISIERA SER YO FUERZA BRUTA DEL FUTURO. ESTOS ESTÁN GLORIFICANDO AL LUMPENPROLETARIADO".</p>
-            <p class="quote-author">— MARÍA JESÚS GALINDO</p>
-        </div>
+                    <div class="testimonial-item">
+                        <p class="quote-text" data-i18n="quote_7">"NUNCA SER UN LLUNK'U DEL OFICIALISMO SE HA VISTO MÁS COOL, YA QUISIERA SER YO FUERZA BRUTA DEL FUTURO. ESTOS ESTÁN GLORIFICANDO AL LUMPENPROLETARIADO".</p>
+                        <p class="quote-author">— MARÍA JESÚS GALINDO</p>
+                    </div>
 
-        <div class="testimonial-item special-alert">
-            <p class="quote-text">"¡CANCELEN LLUNK'US! ¡POR FAVOR! ¡ES UNA ABERRACIÓN!"</p>
-            <p class="quote-author">— UNA LLUNK'U</p>
-        </div>
-    </div>
-</section>
+                    <div class="testimonial-item special-alert">
+                        <p class="quote-text" data-i18n="quote_8">"¡CANCELEN LLUNK'US! ¡POR FAVOR! ¡ES UNA ABERRACIÓN!"</p>
+                        <p class="quote-author">— UNA LLUNK'U</p>
+                    </div>
+                </div>
+            </section>
 
-        <section id="equipo">
-    <h2 data-i18n="sec_equipo" style="text-align: center; margin-bottom: 50px;">EQUIPO & ELENCO</h2>
+            <section id="equipo">
+                <h2 data-i18n="sec_equipo" style="text-align: center; margin-bottom: 50px;">EQUIPO & ELENCO</h2>
 
-    <div class="crew-category">
-        <h3 class="role-title">LLUNK'US SON</h3>
-        <div class="names-list">
-            <span>ETHAN OLMOS</span>
-            <span>PAVLO OLMOS</span>
-            <span>ALVARO CABRERA</span>
-            <span>SAMUEL ARCE</span>
-            <span>JUAN CARLOS PÉREZ</span>
-            <span>WINNER ZEBALLOS</span>
-        </div>
-    </div>
+                <div class="crew-category">
+                    <h3 class="role-title" data-i18n="role_cast">LLUNK'US SON</h3>
+                    <div class="names-list">
+                        <span>ETHAN OLMOS</span>
+                        <span>PAVLO OLMOS</span>
+                        <span>ALVARO CABRERA</span>
+                        <span>SAMUEL ARCE</span>
+                        <span>JUAN CARLOS PÉREZ</span>
+                        <span>WINNER ZEBALLOS</span>
+                    </div>
+                </div>
 
-    <div class="crew-grid">
-        <div class="crew-item">
-            <span class="role">CÁMARAS</span>
-            <span class="name">BORIS GONZALES</span>
-            <span class="name">LUCIANA DECKER</span>
-            <span class="name">GILMAR GONZALES</span>
-        </div>
+                <div class="crew-grid">
+                    <div class="crew-item">
+                        <span class="role" data-i18n="role_cam">CÁMARAS</span>
+                        <span class="name">BORIS GONZALES</span>
+                        <span class="name">LUCIANA DECKER</span>
+                        <span class="name">GILMAR GONZALES</span>
+                    </div>
 
-        <div class="crew-item">
-            <span class="role">SONIDO</span>
-            <span class="name">MAYRA OCHOA</span>
-            <span class="name">CARLOS GUTIERREZ</span>
-        </div>
+                    <div class="crew-item">
+                        <span class="role" data-i18n="role_sound">SONIDO</span>
+                        <span class="name">MAYRA OCHOA</span>
+                        <span class="name">CARLOS GUTIERREZ</span>
+                    </div>
 
-        <div class="crew-item">
-            <span class="role">MEZCCLA 5.1</span>
-            <span class="name">OMAR CORRALES</span>
-        </div>
+                    <div class="crew-item">
+                        <span class="role" data-i18n="role_mix">MEZCLA 5.1</span>
+                        <span class="name">OMAR CORRALES</span>
+                    </div>
 
-        <div class="crew-item">
-            <span class="role">VESTUARIO</span>
-            <span class="name">OUns4fe We4r</span>
-        </div>
+                    <div class="crew-item">
+                        <span class="role" data-i18n="role_wardrobe">VESTUARIO</span>
+                        <span class="name">OUns4fe We4r</span>
+                    </div>
 
-        <div class="crew-item">
-            <span class="role">MUSICA</span>
-            <span class="name">DJCASCO</span>
-        </div>
+                    <div class="crew-item">
+                        <span class="role" data-i18n="role_music">MUSICA</span>
+                        <span class="name">DJCASCO</span>
+                    </div>
 
-        <div class="crew-item">
-            <span class="role">MONTAJE</span>
-            <span class="name">GILMAR GONZALES</span>
-            <span class="name">CARLOS GUTIERREZ</span>
-        </div>
+                    <div class="crew-item">
+                        <span class="role" data-i18n="role_editing">MONTAJE</span>
+                        <span class="name">GILMAR GONZALES</span>
+                        <span class="name">CARLOS GUTIERREZ</span>
+                    </div>
 
-        <div class="crew-item">
-            <span class="role">PRODUCCION</span>
-            <span class="name">GILMAR GONZALES</span>
-            <span class="name">CARLOS GUTIERREZ</span>
-        </div>
+                    <div class="crew-item">
+                        <span class="role" data-i18n="role_prod">PRODUCCION</span>
+                        <span class="name">GILMAR GONZALES</span>
+                        <span class="name">CARLOS GUTIERREZ</span>
+                    </div>
 
-        <div class="crew-item">
-            <span class="role">PRODUCTORA</span>
-            <span class="name">CIENMUERTES PRODUCCIONES</span>
-            <span class="name">GERONTOCRACIA PRODUCCIONES</span>
-        </div>
-    </div>
+                    <div class="crew-item">
+                        <span class="role" data-i18n="role_company">PRODUCTORA</span>
+                        <span class="name">CIENMUERTES PRODUCCIONES</span>
+                        <span class="name">GERONTOCRACIA PRODUCCIONES</span>
+                    </div>
+                </div>
 
-    <div class="director-feature">
-        <span class="role">DIRIGIDA POR</span>
-        <span class="name">GILMAR GONZALES</span>
-    </div>
-</section>
+                <div class="director-feature">
+                    <span class="role" data-i18n="role_director">DIRIGIDA POR</span>
+                    <span class="name">GILMAR GONZALES</span>
+                </div>
+            </section>
+        </section>
     </main>
 
     <footer>
@@ -661,7 +675,6 @@
             currentSlide = (currentSlide + 1) % slides.length;
             slides[currentSlide].classList.add('active');
         }
-        // Cambiar imagen cada 5000ms (10 segundos)
         setInterval(nextSlide, 10000);
 
         // --- 2. LÓGICA DE TRADUCCIÓN (BILINGÜE) ---
@@ -670,25 +683,57 @@
                 nav_videos: "Videos", nav_fotos: "Fotos", nav_texto: "Comentarios", nav_equipo: "Equipo",
                 sec_videos: "Videos", tab_trailers: "Trailers", tab_movie: "Película", tab_previews: "Adelantos",
                 sec_fotos: "Fotos", sec_texto: "Comentarios",
-                txt_p1: "En un reino olvidado, surge una leyenda...",
-                txt_p2: "La lucha por la libertad trascenderá generaciones. Los ecos del pasado resuenan en las montañas que nos vieron nacer.",
-                txt_p3: "Cada paso es un destino, cada mirada una promesa. Las alianzas se forjan en la oscuridad de la rebelión.",
-                txt_p4: "Lo que creías imposible, se vuelve real. Un viaje visual que te cautivará desde el primer segundo.",
-                sec_equipo: "Equipo",
-                team_crew: "Equipo Técnico (Crew)", team_cast: "Elenco (Cast)", team_soldiers: "Soldados", team_courtiers: "Cortesanos",
-                footer_contact: "Contáctanos: info@llunkus.com", footer_work: "Trabaja con nosotros"
+                sec_sinopsis: "SINOPSIS", sec_criticas: "CITAS CRÍTICAS", sec_equipo: "EQUIPO & ELENCO",
+                
+                syn_p1: "LA PAZ, BOLIVIA, AÑO 2049.",
+                syn_p2: "LAS COSAS SON MUY SIMILARES, PERO UN POCO MÁS CAÓTICAS, Y TODO POR CULPA DE ESTOS MALDITOS JÓVENES QUE NO RESPETAN A SUS VIEJOS. MALDITOS, MALDITOS TIEMPOS QUE NOS HA TOCADO VIDIR.",
+                syn_p3: "DE ALGUNA FORMA SE HAN SOLUCIONADO LAS CRISIS QUE AQUEJABAN AL PAÍS. PERO SIGUEN SUELTOS LOS LLUNK'US: LOS FUNCIONARIOS DE CIVIL SEMBRANDO EL CAOS. Y SIGUEN SUELTOS A PESAR DE QUE YA NO RESPETAN NI A SUS PROPIOS SUPERIORES, Y SON Más BIEN KUSILLOS SANGUINARIOS.",
+                syn_p4: "LA PELÍCULA LLUNK'US! SIGUE LAS EXPERIENCIAS DE UN GRUPO DE JÓVENES QUE SE DEDICAN A DEAMBULAR EN LAS NOCHES DEL FUTURO GENERANDO ZOZOBRA ENTRE LA POBLACIÓN EMBORRACHADA: CUATRO COLEGIALES QUE PUEDEN DISFRAZARSE TANTO DE RACISTAS SANGUINARIOS DEL KKK COMO DE COMUNARIES INDÍGENES, SOLO PARA BURLARSE DE LOS TERRORES COLECTIVOS DE LOS CIUDADANOS.",
+                syn_p5: "LA PELÍCULA LLUNK'US ES ADEMÁS UNA REVERSIÓN DE LA NOVELA UNA NARANJA MECÁNICA DEL AUTOR ANTHONY BURGESS, AUNQUE ES UNA VERSIÓN MUY DISTINTA DE DISTINTAS ADAPTACIONES QUE SE HICIERON, PUES SU CONTEXTO ES LA FIESTA DE HALLOWEEN FOLKLÓRICO, DONDE LAS CRIATURAS DE LA DIABLADA SE HAN MEZCLADO CON LOS PERSONAJES DE LAS PELÍCULAS DE TERROR.",
+                syn_p6: "LA PELÍCULA LLUNK'US ES UNA EXPERIENCIA AUDIOVISUAL QUE EXPLORA UNA CIUDAD FUTURISTA DECADENTE Y SIEMPRE CHISTOSA, SIEMPRE IRÓNICA. UNA CIUDAD TOMADA POR UN ESTADO PARAMILITARIZADO, TODA BULLENTE DE MÁSCARAS, TODA CONSUMIBLE, TODA DESACRABLE.",
+                syn_p7: "FINALMENTE, LLUNK'US!, COMO DISPOSITIVO, ES UNA CELEBRACIÓN ALUCINADA DE LOS BROTES DE FUTURO QUE HABITAN EN NUESTRO ACTUAL CAOS. Y ES UNA HISTORIA DE AMIGOS CON LAS FEROMONAS A FLOR DE PIEL.",
+                
+                quote_1: "\"ESE FUTURO PARECE DEL PASADO\"",
+                quote_2: "\"DOPAMINA, DOPAMINA, DOPAMINA... OH ASBESTOS!\"",
+                quote_3: "\"LA INFINITA GRACIA DEL BOLIVIANO PROMEDIO EN EL FUTURISMO DE NUESTRAS CIUDADES DE PIEDRA\"",
+                quote_4: "\"EL CEMENTERIO DE ELEFANTES PARA JOVENCITAS EN TUSSI\"",
+                quote_5: "\"QUIÉN DIRÍA QUE LAS PERRAS TIENEN OPINIONES POLÍTICAS?\"",
+                quote_6: "\"ALCOHOL CAIMÁN CON CHICOLAC: EL BAILEYS ANDINO. UNA DE LAS RECETAS QUE ME LLEVO DE ESTA PELÍCULA.\"",
+                quote_7: "\"NUNCA SER UN LLUNK'U DEL OFICIALISMO SE HA VISTO MÁS COOL, YA QUISIERA SER YO FUERZA BRUTA DEL FUTURO. ESTOS ESTÁN GLORIFICANDO AL LUMPENPROLETARIADO\".",
+                quote_8: "\"¡CANCELEN LLUNK'US! ¡POR FAVOR! ¡ES UNA ABERRACIÓN!\"",
+
+                role_cast: "LLUNK'US SON", role_cam: "CÁMARAS", role_sound: "SONIDO", role_mix: "MEZCLA 5.1",
+                role_wardrobe: "VESTUARIO", role_music: "MUSICA", role_editing: "MONTAJE", role_prod: "PRODUCCION",
+                role_company: "PRODUCTORA", role_director: "DIRIGIDA POR",
+                footer_contact: "Contáctanos: esteesmiemail@gmail.com carlosgutierrezquiroga@gmail.com", footer_work: "Trabaja con nosotros"
             },
             en: {
                 nav_videos: "Videos", nav_fotos: "Photos", nav_texto: "Comments", nav_equipo: "Team",
                 sec_videos: "Videos", tab_trailers: "Trailers", tab_movie: "Movie", tab_previews: "Previews",
                 sec_fotos: "Photos", sec_texto: "Comments",
-                txt_p1: "In a forgotten kingdom, a legend arises...",
-                txt_p2: "The fight for freedom will transcend generations. The echoes of the past resonate in the mountains where we were born.",
-                txt_p3: "Every step is a destiny, every glance a promise. Alliances are forged in the darkness of rebellion.",
-                txt_p4: "What you thought impossible becomes real. A visual journey that will captivate you from the first second.",
-                sec_equipo: "Team",
-                team_crew: "Crew", team_cast: "Cast", team_soldiers: "Soldiers", team_courtiers: "Courtiers",
-                footer_contact: "Contact us: info@llunkus.com", footer_work: "Work with us"
+                sec_sinopsis: "SYNOPSIS", sec_criticas: "CRITICAL QUOTES", sec_equipo: "CREW & CAST",
+                
+                syn_p1: "LA PAZ, BOLIVIA, YEAR 2049.",
+                syn_p2: "THINGS ARE VERY SIMILAR, BUT A BIT MORE CHAOTIC, AND ALL BECAUSE OF THESE DAMN YOUTHS WHO DON'T RESPECT THEIR ELDERS. DAMN, DAMN TIMES WE HAVE TO LIVE IN.",
+                syn_p3: "SOMEHOW THE CRISES THAT PLAGUED THE COUNTRY HAVE BEEN SOLVED. BUT THE LLUNK'US ARE STILL ON THE LOOSE: PLAINCLOTHES OFFICIALS SOWING CHAOS. AND THEY ARE STILL LOOSE EVEN THOUGH THEY NO LONGER RESPECT EVEN THEIR OWN SUPERIORS, AND ARE RATHER BLOODTHIRSTY KUSILLOS.",
+                syn_p4: "THE MOVIE LLUNK'US! FOLLOWS THE EXPERIENCES OF A GROUP OF YOUTHS DEDICATED TO WANDERING THE NIGHTS OF THE FUTURE GENERATING ANXIETY AMONG THE DRUNKEN POPULATION: FOUR SCHOOLBOYS WHO CAN DISGUISE THEMSELVES AS BOTH BLOODTHIRSTY KKK RACISTS AND INDIGENOUS COMMUNARDS, ONLY TO MOCK THE COLLECTIVE TERRORS OF THE CITIZENS.",
+                syn_p5: "THE MOVIE LLUNK'US IS ALSO A REVERSION OF THE NOVEL A CLOCKWORK ORANGE BY AUTHOR ANTHONY BURGESS, ALTHOUGH IT IS A VERY DIFFERENT VERSION FROM VARIOUS ADAPTATIONS THAT WERE MADE, AS ITS CONTEXT IS THE FOLKLORIC HALLOWEEN PARTY, WHERE THE CREATURES OF THE DIABLADA HAVE MIXED WITH HORROR MOVIE CHARACTERS.",
+                syn_p6: "THE MOVIE LLUNK'US IS AN AUDIOVISUAL EXPERIENCE THAT EXPLORES A DECADENT AND ALWAYS FUNNY, ALWAYS IRONIC FUTURISTIC CITY. A CITY TAKEN BY A PARAMILITARIZED STATE, ALL SEETHING WITH MASKS, ALL CONSUMABLE, ALL DESECRATABLE.",
+                syn_p7: "FINALLY, LLUNK'US!, AS A DEVICE, IS A HALLUCINATED CELEBRATION OF THE SPROUTS OF THE FUTURE THAT INHABIT OUR CURRENT CHAOS. AND IT IS A STORY OF FRIENDS WITH PHEROMONES ON THE SURFACE.",
+
+                quote_1: "\"THAT FUTURE SEEMS FROM THE PAST\"",
+                quote_2: "\"DOPAMINE, DOPAMINE, DOPAMINE... OH ASBESTOS!\"",
+                quote_3: "\"THE INFINITE GRACE OF THE AVERAGE BOLIVIAN IN THE FUTURISM OF OUR STONE CITIES\"",
+                quote_4: "\"THE ELEPHANT CEMETERY FOR YOUNG GIRLS ON TUSSI\"",
+                quote_5: "\"WHO WOULD SAY BITCHES HAVE POLITICAL OPINIONS?\"",
+                quote_6: "\"CAIMAN ALCOHOL WITH CHICOLAC: THE ANDEAN BAILEYS. ONE OF THE RECIPES I TAKE FROM THIS MOVIE.\"",
+                quote_7: "\"NEVER HAS BEING A PRO-GOVERNMENT LLUNK'U LOOKED COOLER, I WISH I WERE THE BRUTE FORCE OF THE FUTURE. THEY ARE GLORIFYING THE LUMPENPROLETARIAT.\"",
+                quote_8: "\"CANCEL LLUNK'US! PLEASE! IT'S AN ABERRATION!\"",
+
+                role_cast: "LLUNK'US ARE", role_cam: "CAMERAS", role_sound: "SOUND", role_mix: "5.1 MIX",
+                role_wardrobe: "WARDROBE", role_music: "MUSIC", role_editing: "EDITING", role_prod: "PRODUCTION",
+                role_company: "PRODUCTION COMPANY", role_director: "DIRECTED BY",
+                footer_contact: "Contact us: esteesmiemail@gmail.com carlosgutierrezquiroga@gmail.com", footer_work: "Work with us"
             }
         };
 
@@ -704,12 +749,9 @@
 
         // --- 3. LÓGICA DE PESTAÑAS DE VIDEOS ---
         function showVideoTab(btnElement, tabId) {
-            // Limpiar grids activos
             document.querySelectorAll('.video-grid').forEach(grid => grid.classList.remove('active'));
-            // Limpiar botones activos
             document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
             
-            // Activar seleccionados
             document.getElementById('tab-' + tabId).classList.add('active');
             btnElement.classList.add('active');
         }
