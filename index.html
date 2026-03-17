@@ -189,11 +189,197 @@
         #lightbox img { max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
         #lightbox.active { display: flex; }
 
-        /* --- 4. SECCIÓN DE TEXTO --- */
-        .text-columns {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px; margin-top: 30px; font-size: 1.1rem; text-align: justify;
-        }
+        /* --- 4. SECCIÓN DE TEXTO (ESTILO DOSSIER) --- */
+.dossier-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: 30px;
+}
+
+.dossier-item {
+    max-width: 65%; /* El texto no ocupa todo el ancho para dar aire al diseño */
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+/* Párrafos a la izquierda */
+.dossier-item.left {
+    align-self: flex-start;
+    text-align: left;
+    border-left: 2px solid var(--titulos);
+    padding-left: 20px;
+}
+
+/* Párrafos a la derecha */
+.dossier-item.right {
+    align-self: flex-end;
+    text-align: right;
+    border-right: 2px solid var(--titulos);
+    padding-right: 20px;
+}
+
+/* Párrafo destacado al centro (Final de sinopsis) */
+.dossier-item.full {
+    max-width: 100%;
+    align-self: center;
+    text-align: center;
+    font-style: italic;
+    color: var(--sub-btn);
+}
+/* --- ESTILO TESTIMONIALES (CENTRADOS) --- */
+.testimonials-container {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 80px; /* Mucho espacio entre citas para que cada una respire */
+}
+
+.testimonial-item {
+    text-align: center;
+    position: relative;
+    padding: 20px;
+}
+
+/* El texto de la cita: Grande y llamativo */
+.quote-text {
+    font-size: 1.8rem; /* Tamaño grande */
+    color: var(--texto);
+    font-weight: 300;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    text-transform: uppercase; /* Para que se sienta como un grito de prensa */
+    letter-spacing: 1px;
+}
+
+/* El autor: Pequeño y elegante */
+.quote-author {
+    font-size: 0.9rem;
+    color: var(--sub-btn);
+    letter-spacing: 3px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Efecto visual de comillas decorativas */
+.testimonial-item::before {
+    content: "“";
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 5rem;
+    color: rgba(202, 125, 69, 0.2); /* Color cobre muy transparente */
+    font-family: serif;
+}
+
+/* Estilo para la cita de 'Una Llunk'u' que quiere cancelar la peli */
+.special-alert .quote-text {
+    color: #ff4444; /* Rojo para resaltar la ironía */
+}
+
+/* --- ESTILO DE CRÉDITOS CINEMATOGRÁFICOS --- */
+#equipo {
+    padding: 80px 20px;
+    background-color: var(--bg-secundario); /* Un poco más oscuro para que resalten los nombres */
+}
+
+.crew-category {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.role-title {
+    font-size: 0.9rem;
+    color: var(--sub-btn);
+    letter-spacing: 5px;
+    margin-bottom: 20px;
+}
+
+.names-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--texto);
+}
+
+.crew-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.crew-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.crew-item .role {
+    font-size: 0.75rem;
+    color: var(--sub-btn);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.crew-item .name {
+    font-size: 1.1rem;
+    color: var(--texto);
+    font-weight: 500;
+}
+
+.director-feature {
+    text-align: center;
+    margin-top: 80px;
+    border-top: 1px solid rgba(216, 171, 94, 0.2);
+    padding-top: 40px;
+}
+
+.director-feature .role {
+    display: block;
+    font-size: 0.8rem;
+    letter-spacing: 6px;
+    color: var(--sub-btn);
+    margin-bottom: 10px;
+}
+
+.director-feature .name {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--titulos);
+    text-transform: uppercase;
+}
+
+/* Ajuste para móviles */
+@media (max-width: 768px) {
+    .names-list { font-size: 1.1rem; }
+    .director-feature .name { font-size: 1.5rem; }
+}
+
+/* Ajuste para móviles */
+@media (max-width: 768px) {
+    .quote-text {
+        font-size: 1.4rem;
+    }
+}
+
+/* Adaptación para celulares */
+@media (max-width: 768px) {
+    .dossier-item {
+        max-width: 100%;
+        text-align: left !important;
+        align-self: flex-start !important;
+        border-right: none !important;
+        border-left: 2px solid var(--titulos) !important;
+    }
+}
 
         /* --- 5. SECCIÓN DE EQUIPO --- */
         .team-grid {
@@ -303,41 +489,159 @@
         </section>
 
         <section id="texto">
-            <h2 data-i18n="sec_texto">Comentarios</h2>
-            <div class="text-columns">
-                <p data-i18n="txt_p1">"En un reino olvidado, surge una leyenda..."</p>
-                <p data-i18n="txt_p2">"La lucha por la libertad trascenderá generaciones. Los ecos del pasado resuenan en las montañas que nos vieron nacer."</p>
-                <p data-i18n="txt_p3">"Cada paso es un destino, cada mirada una promesa. Las alianzas se forjan en la oscuridad de la rebelión."</p>
-                <p data-i18n="txt_p4">"Lo que creías imposible, se vuelve real. Un viaje visual que te cautivará desde el primer segundo."</p>
-            </div>
-        </section>
+    <h2 data-i18n="sec_sinopsis">SINOPSIS</h2>
+    
+    <div class="dossier-layout">
+        <div class="dossier-item left">
+            <p>LA PAZ, BOLIVIA, AÑO 2049.</p>
+        </div>
+
+        <div class="dossier-item right">
+            <p>LAS COSAS SON MUY SIMILARES, PERO UN POCO MÁS CAÓTICAS, Y TODO POR CULPA DE ESTOS MALDITOS JÓVENES QUE NO RESPETAN A SUS VIEJOS. MALDITOS, MALDITOS TIEMPOS QUE NOS HA TOCADO VIDIR.</p>
+        </div>
+
+        <div class="dossier-item left">
+            <p>DE ALGUNA FORMA SE HAN SOLUCIONADO LAS CRISIS QUE AQUEJABAN AL PAÍS. PERO SIGUEN SUELTOS LOS LLUNK'US: LOS FUNCIONARIOS DE CIVIL SEMBRANDO EL CAOS. Y SIGUEN SUELTOS A PESAR DE QUE YA NO RESPETAN NI A SUS PROPIOS SUPERIORES, Y SON Más BIEN KUSILLOS SANGUINARIOS.</p>
+        </div>
+
+        <div class="dossier-item right">
+            <p>LA PELÍCULA LLUNK'US! SIGUE LAS EXPERIENCIAS DE UN GRUPO DE JÓVENES QUE SE DEDICAN A DEAMBULAR EN LAS NOCHES DEL FUTURO GENERANDO ZOZOBRA ENTRE LA POBLACIÓN EMBORRACHADA: CUATRO COLEGIALES QUE PUEDEN DISFRAZARSE TANTO DE RACISTAS SANGUINARIOS DEL KKK COMO DE COMUNARIES INDÍGENES, SOLO PARA BURLARSE DE LOS TERRORES COLECTIVOS DE LOS CIUDADANOS. </p>
+        </div>
+
+        <div class="dossier-item left">
+            <p>LA PELÍCULA LLUNK'US ES ADEMÁS UNA REVERSIÓN DE LA NOVELA UNA NARANJA MECÁNICA DEL AUTOR ANTHONY BURGESS, AUNQUE ES UNA VERSIÓN MUY DISTINTA DE DISTINTAS ADAPTACIONES QUE SE HICIERON, PUES SU CONTEXTO ES LA FIESTA DE HALLOWEEN FOLKLÓRICO, DONDE LAS CRIATURAS DE LA DIABLADA SE HAN MEZCLADO CON LOS PERSONAJES DE LAS PELÍCULAS DE TERROR.</p>
+        </div>
+
+        <div class="dossier-item right">
+            <p>LA PELÍCULA LLUNK'US ES UNA EXPERIENCIA AUDIOVISUAL QUE EXPLORA UNA CIUDAD FUTURISTA DECADENTE Y SIEMPRE CHISTOSA, SIEMPRE IRÓNICA. UNA CIUDAD TOMADA POR UN ESTADO PARAMILITARIZADO, TODA BULLENTE DE MÁSCARAS, TODA CONSUMIBLE, TODA DESACRABLE.</p>
+        </div>
+
+        <div class="dossier-item full">
+            <p>FINALMENTE, LLUNK'US!, COMO DISPOSITIVO, ES UNA CELEBRACIÓN ALUCINADA DE LOS BROTES DE FUTURO QUE HABITAN EN NUESTRO ACTUAL CAOS. Y ES UNA HISTORIA DE AMIGOS CON LAS FEROMONAS A FLOR DE PIEL.</p>
+        </div>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid var(--titulos); margin: 60px 0;">
+
+    <section id="criticas">
+    <h2 data-i18n="sec_criticas" style="text-align: left; margin-bottom: 60px;">CITAS CRÍTICAS</h2>
+    
+    <div class="testimonials-container">
+        <div class="testimonial-item">
+            <p class="quote-text">"ESE FUTURO PARECE DEL PASADO"</p>
+            <p class="quote-author">— ÓSCAR SORIA</p>
+        </div>
+
+        <div class="testimonial-item">
+            <p class="quote-text">"DOPAMINA, DOPAMINA, DOPAMINA... OH ASBESTOS!"</p>
+            <p class="quote-author">— FAUSTO REINAGA</p>
+        </div>
+
+        <div class="testimonial-item">
+            <p class="quote-text">"LA INFINITA GRACIA DEL BOLIVIANO PROMEDIO EN EL FUTURISMO DE NUESTRAS CIUDADES DE PIEDRA"</p>
+            <p class="quote-author">— FRANZ TAMAYO</p>
+        </div>
+
+        <div class="testimonial-item">
+            <p class="quote-text">"EL CEMENTERIO DE ELEFANTES PARA JOVENCITAS EN TUSSI"</p>
+            <p class="quote-author">— SAMUEL DM</p>
+        </div>
+
+        <div class="testimonial-item">
+            <p class="quote-text">"QUIÉN DIRÍA QUE LAS PERRAS TIENEN OPINIONES POLÍTICAS?"</p>
+            <p class="quote-author">— WINNER ZEBALLOS</p>
+        </div>
+
+        <div class="testimonial-item">
+            <p class="quote-text">"ALCOHOL CAIMÁN CON CHICOLAC: EL BAILEYS ANDINO. UNA DE LAS RECETAS QUE ME LLEVO DE ESTA PELÍCULA."</p>
+            <p class="quote-author">— JORGE ZANJINEZ</p>
+        </div>
+
+        <div class="testimonial-item">
+            <p class="quote-text">"NUNCA SER UN LLUNK'U DEL OFICIALISMO SE HA VISTO MÁS COOL, YA QUISIERA SER YO FUERZA BRUTA DEL FUTURO. ESTOS ESTÁN GLORIFICANDO AL LUMPENPROLETARIADO".</p>
+            <p class="quote-author">— MARÍA JESÚS GALINDO</p>
+        </div>
+
+        <div class="testimonial-item special-alert">
+            <p class="quote-text">"¡CANCELEN LLUNK'US! ¡POR FAVOR! ¡ES UNA ABERRACIÓN!"</p>
+            <p class="quote-author">— UNA LLUNK'U</p>
+        </div>
+    </div>
+</section>
 
         <section id="equipo">
-            <h2 data-i18n="sec_equipo">Equipo</h2>
-            <div class="team-grid">
-                <div class="team-category">
-                    <h3 data-i18n="team_crew">Crew</h3>
-                    <ul><li>Reina G (Directora)</li><li>Carlos Marlos (Productor)</li></ul>
-                </div>
-                <div class="team-category">
-                    <h3 data-i18n="team_cast">Cast</h3>
-                    <ul><li>Inti Huamán</li><li>Killa Quispe</li></ul>
-                </div>
-                <div class="team-category">
-                    <h3 data-i18n="team_soldiers">Soldiers</h3>
-                    <ul><li>Túpac Amaru</li><li>Micaela Bastidas</li></ul>
-                </div>
-                <div class="team-category">
-                    <h3 data-i18n="team_courtiers">Courtiers</h3>
-                    <ul><li>Huayna Cápac</li><li>Coya Mama</li></ul>
-                </div>
-            </div>
-        </section>
+    <h2 data-i18n="sec_equipo" style="text-align: center; margin-bottom: 50px;">EQUIPO & ELENCO</h2>
+
+    <div class="crew-category">
+        <h3 class="role-title">LLUNK'US SON</h3>
+        <div class="names-list">
+            <span>ETHAN OLMOS</span>
+            <span>PAVLO OLMOS</span>
+            <span>ALVARO CABRERA</span>
+            <span>SAMUEL ARCE</span>
+            <span>JUAN CARLOS PÉREZ</span>
+            <span>WINNER ZEBALLOS</span>
+        </div>
+    </div>
+
+    <div class="crew-grid">
+        <div class="crew-item">
+            <span class="role">CÁMARAS</span>
+            <span class="name">BORIS GONZALES</span>
+            <span class="name">LUCIANA DECKER</span>
+            <span class="name">GILMAR GONZALES</span>
+        </div>
+
+        <div class="crew-item">
+            <span class="role">SONIDO</span>
+            <span class="name">MAYRA OCHOA</span>
+            <span class="name">CARLOS GUTIERREZ</span>
+        </div>
+
+        <div class="crew-item">
+            <span class="role">MEZCCLA 5.1</span>
+            <span class="name">OMAR CORRALES</span>
+        </div>
+
+        <div class="crew-item">
+            <span class="role">VESTUARIO</span>
+            <span class="name">OUns4fe We4r</span>
+        </div>
+
+        <div class="crew-item">
+            <span class="role">MUSICA</span>
+            <span class="name">DJCASCO</span>
+        </div>
+
+        <div class="crew-item">
+            <span class="role">MONTAJE</span>
+            <span class="name">GILMAR GONZALES</span>
+            <span class="name">CARLOS GUTIERREZ</span>
+        </div>
+
+        <div class="crew-item">
+            <span class="role">PRODUCCION</span>
+            <span class="name">GILMAR GONZALES</span>
+            <span class="name">CARLOS GUTIERREZ</span>
+        </div>
+
+        <div class="crew-item">
+            <span class="role">PRODUCTORA</span>
+            <span class="name">CIENMUERTES PRODUCCIONES</span>
+            <span class="name">GERONTOCRACIA PRODUCCIONES</span>
+        </div>
+    </div>
+
+    <div class="director-feature">
+        <span class="role">DIRIGIDA POR</span>
+        <span class="name">GILMAR GONZALES</span>
+    </div>
+</section>
     </main>
 
     <footer>
         <div class="footer-content">
-            <a href="#" data-i18n="footer_contact">Contáctanos: info@llunkus.com</a>
+            <a href="#" data-i18n="footer_contact">Contáctanos: esteesmiemail@gmail.com carlosgutierrezquiroga@gmail.com</a>
             <a href="#" data-i18n="footer_work">Trabaja con nosotros</a>
             <div class="socials" style="color: var(--sub-btn); font-weight: bold;">Instagram | YouTube | X</div>
         </div>
