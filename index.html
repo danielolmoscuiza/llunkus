@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LLUNK´US - Película</title>
+    
+    <link rel="preconnect" href="https://www.youtube.com">
+    <link rel="preconnect" href="https://s.ytimg.com">
+
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         /* --- PALETA DE COLORES Y VARIABLES ACTUALIZADA --- */
@@ -17,407 +21,175 @@
         }
 
         /* --- OPTIMIZACIÓN DE SCROLL FLUIDO --- */
-        html {
-            scroll-behavior: smooth; /* Solo se aplica aquí */
-        }
-
-        /* --- ESTILOS GENERALES --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            /* Se eliminó scroll-behavior de aquí por rendimiento */
-        }
-
+        html { scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Marbold', 'Montserrat', sans-serif;
-            background-color: var(--bg-general);
-            color: var(--texto);
-            line-height: 1.6;
-            overflow-x: hidden; /* Evita scrolls horizontales fantasma */
+            background-color: var(--bg-general); color: var(--texto);
+            line-height: 1.6; overflow-x: hidden; 
         }
-
         h1, h2, h3 { color: var(--titulos); }
-
-        section {
-            padding: 100px 20px 80px; 
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        section { padding: 100px 20px 80px; max-width: 1200px; margin: 0 auto; }
 
         /* --- HEADER Y NAVEGACIÓN --- */
         header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 40px;
-            background: var(--header-bg);
-            z-index: 100;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            /* OPTIMIZACIÓN GPU: Obliga a usar aceleración por hardware para que no se tranque al scrollear */
-            transform: translateZ(0); 
-            will-change: transform;
+            position: fixed; top: 0; width: 100%; display: flex;
+            justify-content: space-between; align-items: center; padding: 15px 40px;
+            background: var(--header-bg); z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+            transform: translateZ(0); will-change: transform;
         }
-
-        .logo img {
-            height: 40px; 
-            width: auto;
-            display: block;
-        }
+        .logo img { height: 40px; width: auto; display: block; }
+        .header-controls { display: flex; align-items: center; gap: 15px; }
 
         nav { display: flex; gap: 20px; }
-
-        nav a {
-            text-decoration: none;
-            color: var(--texto);
-            font-weight: 600;
-            transition: all 0.3s ease;
-            position: relative;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-        }
-
-        nav a::after {
-            content: ''; position: absolute; width: 0; height: 2px;
-            bottom: -5px; left: 0; background-color: var(--sub-btn);
-            transition: width 0.3s ease;
-        }
-
+        nav a { text-decoration: none; color: var(--texto); font-weight: 600; transition: all 0.3s ease; position: relative; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+        nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0; background-color: var(--sub-btn); transition: width 0.3s ease; }
         nav a:hover { color: var(--sub-btn); transform: scale(1.05); }
         nav a:hover::after { width: 100%; }
 
-        .lang-selector button {
-            background: none; border: 1px solid var(--texto); padding: 5px 10px;
-            cursor: pointer; border-radius: 4px; font-family: inherit;
-            color: var(--texto); transition: 0.3s;
-        }
+        .lang-selector { display: flex; gap: 5px; }
+        .lang-selector button { background: none; border: 1px solid var(--texto); padding: 5px 10px; cursor: pointer; border-radius: 4px; font-family: inherit; color: var(--texto); transition: 0.3s; }
+        .lang-selector button:hover, .lang-selector button.active { background: var(--sub-btn); color: #2a231b; border-color: var(--sub-btn); font-weight: bold; }
 
-        .lang-selector button:hover, .lang-selector button.active {
-            background: var(--sub-btn); color: #2a231b; border-color: var(--sub-btn);
-            font-weight: bold;
-        }
-
-        /* --- 1. SECCIÓN DE INICIO (SLIDER FULL SCREEN) --- */
-        #home {
-            height: 100vh;
-            width: 100%;
-            max-width: 100%; 
-            padding: 0;
-            position: relative;
-            overflow: hidden;
-            background-color: #111; /* Color de fondo por si tarda en cargar la imagen */
-        }
-
-        .slider-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-        .slide img, .slide source{
-            width: 100%;
-            height: 100vh;
-            object-fit: cover;
-        }
-
-        .slide {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out; 
-            z-index: 1;
-            /* OPTIMIZACIÓN GPU: Hace que la transición de imágenes sea mucho más suave */
-            will-change: opacity;
-            backface-visibility: hidden;
-        }
-
+        /* --- 1. SECCIÓN DE INICIO (SLIDER) --- */
+        #home { height: 100vh; width: 100%; max-width: 100%; padding: 0; position: relative; overflow: hidden; background-color: #111; }
+        .slider-container { width: 100%; height: 100%; position: relative; }
+        .slide img, .slide source{ width: 100%; height: 100vh; object-fit: cover; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; z-index: 1; will-change: opacity; backface-visibility: hidden; }
         .slide.active { opacity: 1; z-index: 2; }
-
-        .slider-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(42,35,27,0.7) 0%, rgba(42,35,27,0) 20%, rgba(42,35,27,0) 80%, rgba(42,35,27,1) 100%);
-            z-index: 3;
-            pointer-events: none;
-        }
+        .slider-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(42,35,27,0.7) 0%, rgba(42,35,27,0) 20%, rgba(42,35,27,0) 80%, rgba(42,35,27,1) 100%); z-index: 3; pointer-events: none; }
 
         /* --- 2. SECCIÓN DE VIDEOS --- */
         .tabs { display: flex; gap: 15px; margin: 30px 0; justify-content: center; }
-        .tabs button {
-            background-color: transparent; color: var(--sub-btn);
-            border: 2px solid var(--sub-btn); padding: 10px 25px;
-            font-size: 1rem; border-radius: 5px; cursor: pointer;
-            transition: all 0.3s; font-family: inherit; font-weight: bold;
-        }
-        .tabs button:hover, .tabs button.active {
-            background-color: var(--sub-btn); color: #2a231b;
-        }
-        .video-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px; display: none;
-        }
+        .tabs button { background-color: transparent; color: var(--sub-btn); border: 2px solid var(--sub-btn); padding: 10px 25px; font-size: 1rem; border-radius: 5px; cursor: pointer; transition: all 0.3s; font-family: inherit; font-weight: bold; }
+        .tabs button:hover, .tabs button.active { background-color: var(--sub-btn); color: #2a231b; }
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; display: none; }
         .video-grid.active { display: grid; }
-        .video-item {
-            background: #000;
-            aspect-ratio: 16/9;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            border: 1px solid var(--sub-btn);
-            overflow: hidden; 
-        }
-
-        .video-item iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+        .video-item { background: #000; aspect-ratio: 16/9; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; border: 1px solid var(--sub-btn); overflow: hidden; }
+        .video-item iframe { width: 100%; height: 100%; border: none; }
 
         /* --- 3. SECCIÓN DE FOTOS --- */
-        .photo-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px; margin-top: 30px;
-        }
-        .photo-grid img {
-            width: 100%; height: 200px; object-fit: cover; border-radius: 8px;
-            cursor: pointer; transition: transform 0.3s; border: 1px solid var(--sub-btn);
-        }
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 30px; }
+        .photo-grid img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; cursor: pointer; transition: transform 0.3s; border: 1px solid var(--sub-btn); }
         .photo-grid img:hover { transform: scale(1.03); }
-
-        #lightbox {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(42, 35, 27, 0.95); z-index: 1000;
-            justify-content: center; align-items: center;
-            /* OPTIMIZACIÓN: Acelera la apertura del lightbox */
-            will-change: opacity;
-        }
+        #lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(42, 35, 27, 0.95); z-index: 1000; justify-content: center; align-items: center; will-change: opacity; }
         #lightbox img { max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
         #lightbox.active { display: flex; }
 
         /* --- 4. SECCIÓN DE TEXTO (ESTILO DOSSIER) --- */
-        .dossier-layout {
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-            margin-top: 30px;
-        }
-
-        .dossier-item {
-            max-width: 65%; 
-            font-size: 1.1rem;
-            line-height: 1.8;
-        }
-
-        .dossier-item.left {
-            align-self: flex-start;
-            text-align: left;
-            border-left: 2px solid var(--titulos);
-            padding-left: 20px;
-        }
-
-        .dossier-item.right {
-            align-self: flex-end;
-            text-align: right;
-            border-right: 2px solid var(--titulos);
-            padding-right: 20px;
-        }
-
-        .dossier-item.full {
-            max-width: 100%;
-            align-self: center;
-            text-align: center;
-            font-style: italic;
-            color: var(--sub-btn);
-        }
+        .dossier-layout { display: flex; flex-direction: column; gap: 40px; margin-top: 30px; }
+        .dossier-item { max-width: 65%; font-size: 1.1rem; line-height: 1.8; }
+        .dossier-item.left { align-self: flex-start; text-align: left; border-left: 2px solid var(--titulos); padding-left: 20px; }
+        .dossier-item.right { align-self: flex-end; text-align: right; border-right: 2px solid var(--titulos); padding-right: 20px; }
+        .dossier-item.full { max-width: 100%; align-self: center; text-align: center; font-style: italic; color: var(--sub-btn); }
 
         /* --- ESTILO TESTIMONIALES --- */
-        .testimonials-container {
-            max-width: 900px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 80px; 
-        }
-
-        .testimonial-item {
-            text-align: center;
-            position: relative;
-            padding: 20px;
-        }
-
-        .quote-text {
-            font-size: 1.8rem; 
-            color: var(--texto);
-            font-weight: 300;
-            line-height: 1.4;
-            margin-bottom: 15px;
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-        }
-
-        .quote-author {
-            font-size: 0.9rem;
-            color: var(--sub-btn);
-            letter-spacing: 3px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .testimonial-item::before {
-            content: "“";
-            position: absolute;
-            top: -40px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 5rem;
-            color: rgba(202, 125, 69, 0.2); 
-            font-family: serif;
-        }
-
-        .special-alert .quote-text {
-            color: #ff4444; 
-        }
+        .testimonials-container { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 80px; }
+        .testimonial-item { text-align: center; position: relative; padding: 20px; }
+        .quote-text { font-size: 1.8rem; color: var(--texto); font-weight: 300; line-height: 1.4; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .quote-author { font-size: 0.9rem; color: var(--sub-btn); letter-spacing: 3px; font-weight: bold; text-transform: uppercase; }
+        .testimonial-item::before { content: "“"; position: absolute; top: -40px; left: 50%; transform: translateX(-50%); font-size: 5rem; color: rgba(202, 125, 69, 0.2); font-family: serif; }
+        .special-alert .quote-text { color: #ff4444; }
 
         /* --- ESTILO DE CRÉDITOS CINEMATOGRÁFICOS --- */
-        #equipo {
-            padding: 80px 20px;
-            background-color: var(--bg-secundario); 
-        }
-
-        .crew-category {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .role-title {
-            font-size: 0.9rem;
-            color: var(--sub-btn);
-            letter-spacing: 5px;
-            margin-bottom: 20px;
-        }
-
-        .names-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: var(--texto);
-        }
-
-        .crew-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            max-width: 1000px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .crew-item {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .crew-item .role {
-            font-size: 0.75rem;
-            color: var(--sub-btn);
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-
-        .crew-item .name {
-            font-size: 1.1rem;
-            color: var(--texto);
-            font-weight: 500;
-        }
-
-        .director-feature {
-            text-align: center;
-            margin-top: 80px;
-            border-top: 1px solid rgba(216, 171, 94, 0.2);
-            padding-top: 40px;
-        }
-
-        .director-feature .role {
-            display: block;
-            font-size: 0.8rem;
-            letter-spacing: 6px;
-            color: var(--sub-btn);
-            margin-bottom: 10px;
-        }
-
-        .director-feature .name {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--titulos);
-            text-transform: uppercase;
-        }
-
-        /* --- 5. SECCIÓN DE EQUIPO --- */
-        .team-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px; margin-top: 30px;
-        }
-        .team-category h3 { color: var(--sub-btn); margin-bottom: 15px; border-bottom: 1px solid var(--titulos); padding-bottom: 5px; }
-        .team-category ul { list-style: none; }
-        .team-category li { margin-bottom: 8px; }
+        #equipo { padding: 80px 20px; background-color: var(--bg-secundario); }
+        .crew-category { text-align: center; margin-bottom: 60px; }
+        .role-title { font-size: 0.9rem; color: var(--sub-btn); letter-spacing: 5px; margin-bottom: 20px; }
+        .names-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; font-size: 1.4rem; font-weight: bold; color: var(--texto); }
+        .crew-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; max-width: 1000px; margin: 0 auto; text-align: center; }
+        .crew-item { display: flex; flex-direction: column; gap: 5px; }
+        .crew-item .role { font-size: 0.75rem; color: var(--sub-btn); letter-spacing: 3px; text-transform: uppercase; }
+        .crew-item .name { font-size: 1.1rem; color: var(--texto); font-weight: 500; }
+        .director-feature { text-align: center; margin-top: 80px; border-top: 1px solid rgba(216, 171, 94, 0.2); padding-top: 40px; }
+        .director-feature .role { display: block; font-size: 0.8rem; letter-spacing: 6px; color: var(--sub-btn); margin-bottom: 10px; }
+        .director-feature .name { font-size: 2rem; font-weight: bold; color: var(--titulos); text-transform: uppercase; }
 
         /* --- 6. FOOTER --- */
-        footer { background-color: var(--bg-secundario); padding: 40px 20px; text-align: center; margin-top: 50px; border-top: 1px solid var(--titulos); }
-        .footer-content { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px; max-width: 1200px; margin: 0 auto; }
-        .footer-content a { color: var(--texto); text-decoration: none; font-weight: 600; transition: color 0.3s; }
-        .footer-content a:hover { color: var(--sub-btn); }
+        footer { background-color: var(--bg-secundario); padding: 40px 20px; text-align: center; margin-top: 50px; border-top: 1px solid var(--titulos); padding-bottom: 100px; }
+        .footer-content { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .footer-content p { color: var(--texto); font-weight: 600; font-size: 1rem; }
+
+        /* --- ESTILOS BOTÓN FLOTANTE YOUTUBE --- */
+        .floating-music-btn-container {
+            position: fixed; bottom: 30px; right: 30px; z-index: 1000;
+            display: flex; align-items: center; gap: 15px;
+        }
+
+        .music-tooltip {
+            background-color: var(--sub-btn); color: #2a231b; padding: 8px 15px;
+            border-radius: 20px; font-size: 0.85rem; font-weight: bold;
+            opacity: 0; transform: translateX(20px); transition: all 0.3s ease;
+            pointer-events: none; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .floating-music-btn-container:hover .music-tooltip {
+            opacity: 1; transform: translateX(0);
+        }
+
+        #floating-music-btn {
+            background-color: var(--header-bg); border: 2px solid var(--sub-btn);
+            color: var(--texto); width: 65px; height: 65px; border-radius: 50%;
+            cursor: pointer; font-size: 1.8rem; display: flex; justify-content: center;
+            align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+
+        #floating-music-btn:not(.disabled):hover {
+            transform: scale(1.1); background-color: var(--sub-btn); color: #2a231b;
+        }
+
+        /* Estado "Desactivado/Cargando" del botón */
+        #floating-music-btn.disabled {
+            opacity: 0.6; cursor: not-allowed; border-color: rgba(216, 171, 94, 0.4);
+        }
+
+        /* Animación del Loader */
+        .loading-spinner {
+            border: 3px solid transparent;
+            border-top: 3px solid var(--texto);
+            border-right: 3px solid var(--texto);
+            border-radius: 50%; width: 22px; height: 22px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(216, 171, 94, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(216, 171, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(216, 171, 94, 0); }
+        }
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+
+        #floating-music-btn.playing {
+            animation: pulse 2s infinite; border-color: var(--sub-btn);
+        }
 
         /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
-            header { 
-                padding: 15px 20px; 
-                /* OPTIMIZACIÓN: Quitamos el blur en móvil porque destruye el rendimiento del scroll */
-                backdrop-filter: none;
-                background: rgba(30, 24, 19, 0.98); /* Color más sólido para compensar la falta de blur */
-            }
+            header { padding: 15px 20px; backdrop-filter: none; background: rgba(30, 24, 19, 0.98); }
             nav { display: none; } 
+            .header-controls { gap: 8px; }
+            .lang-selector button { padding: 4px 6px; font-size: 0.7rem; }
             section { padding: 80px 20px 40px; }
-            
             .names-list { font-size: 1.1rem; }
             .director-feature .name { font-size: 1.5rem; }
             .quote-text { font-size: 1.4rem; }
-
-            .dossier-layout {
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                gap: 25px;
-            }
-            .dossier-item {
-                width: 100% !important;
-                max-width: 100% !important;
-                text-align: left !important;
-                align-self: flex-start !important;
-                border-right: none !important;
-                border-left: 2px solid var(--titulos) !important;
-                padding-right: 0 !important;
-                padding-left: 15px !important;
-            }
-            .dossier-item.full {
-                text-align: center !important;
-                border-left: none !important;
-                padding-left: 0 !important;
-            }
+            .dossier-layout { display: flex; flex-direction: column; width: 100%; gap: 25px; }
+            .dossier-item { width: 100% !important; max-width: 100% !important; text-align: left !important; align-self: flex-start !important; border-right: none !important; border-left: 2px solid var(--titulos) !important; padding-right: 0 !important; padding-left: 15px !important; }
+            .dossier-item.full { text-align: center !important; border-left: none !important; padding-left: 0 !important; }
+            .floating-music-btn-container { bottom: 20px; right: 20px; }
+            #floating-music-btn { width: 55px; height: 55px; font-size: 1.5rem; }
+            .music-tooltip { display: none; }
         }
     </style>
 </head>
 <body>
+
+    <div id="youtube-audio-player" style="position: absolute; width: 1px; height: 1px; left: -9999px; overflow: hidden;"></div>
 
     <header>
         <a href="#home" class="logo">
@@ -429,11 +201,21 @@
             <a href="#texto" data-i18n="nav_texto">Comentarios</a>
             <a href="#equipo" data-i18n="nav_equipo">Equipo</a>
         </nav>
-        <div class="lang-selector">
-            <button onclick="setLang('es')" id="btn-es" class="active">ES</button>
-            <button onclick="setLang('en')" id="btn-en">EN</button>
+        
+        <div class="header-controls">
+            <div class="lang-selector">
+                <button onclick="setLang('es')" id="btn-es" class="active">ES</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
         </div>
     </header>
+
+    <div class="floating-music-btn-container">
+        <div class="music-tooltip" id="music-tooltip-text" data-i18n="music_loading">Cargando audio...</div>
+        <button id="floating-music-btn" class="disabled" onclick="toggleYouTubeAudio()">
+            <span id="music-icon"><div class="loading-spinner"></div></span>
+        </button>
+    </div>
 
     <main>
         <section id="home">
@@ -460,28 +242,20 @@
             <h2 data-i18n="sec_videos">Videos</h2>
             <div class="tabs">
                 <button onclick="showVideoTab(this, 'trailers')" class="active" data-i18n="tab_trailers">Trailers</button>
-                <button onclick="showVideoTab(this, 'pelicula')" data-i18n="tab_movie">Película</button>
-                <button onclick="showVideoTab(this, 'adelantos')" data-i18n="tab_previews">Adelantos</button>
             </div>
             
             <div id="tab-trailers" class="video-grid active">
                 <div class="video-item">
                     <iframe 
                         src="https://drive.google.com/file/d/1tg0W6JGZCNcKz-aKxKVVA6QSQEoOUHTW/preview" 
-                        width="100%" 
-                        height="100%" 
-                        allow="autoplay" 
-                        allowfullscreen
-                        loading="lazy"> </iframe>
+                        width="100%" height="100%" allow="autoplay" allowfullscreen loading="lazy">
+                    </iframe>
                 </div>
                 <div class="video-item">
                     <iframe
                         src="https://drive.google.com/file/d/1BzCQQfAvBo569ud-B82VNj52WifBa5BA/preview"
-                        width="100%" 
-                        height="100%"
-                        allow="autoplay"
-                        allowfullscreen
-                        loading="lazy"> </iframe>
+                        width="100%" height="100%" allow="autoplay" allowfullscreen loading="lazy">
+                    </iframe>
                 </div>
             </div>
 
@@ -520,80 +294,28 @@
             <h2 data-i18n="sec_sinopsis">SINOPSIS</h2>
             
             <div class="dossier-layout">
-                <div class="dossier-item left">
-                    <p data-i18n="syn_p1">LA PAZ, BOLIVIA, AÑO 2049.</p>
-                </div>
-
-                <div class="dossier-item right">
-                    <p data-i18n="syn_p2">LAS COSAS SON MUY SIMILARES, PERO UN POCO MÁS CAÓTICAS, Y TODO POR CULPA DE ESTOS MALDITOS JÓVENES QUE NO RESPETAN A SUS VIEJOS. MALDITOS, MALDITOS TIEMPOS QUE NOS HA TOCADO VIDIR.</p>
-                </div>
-
-                <div class="dossier-item left">
-                    <p data-i18n="syn_p3">DE ALGUNA FORMA SE HAN SOLUCIONADO LAS CRISIS QUE AQUEJABAN AL PAÍS. PERO SIGUEN SUELTOS LOS LLUNK'US: LOS FUNCIONARIOS DE CIVIL SEMBRANDO EL CAOS. Y SIGUEN SUELTOS A PESAR DE QUE YA NO RESPETAN NI A SUS PROPIOS SUPERIORES, Y SON Más BIEN KUSILLOS SANGUINARIOS.</p>
-                </div>
-
-                <div class="dossier-item right">
-                    <p data-i18n="syn_p4">LA PELÍCULA LLUNK'US! SIGUE LAS EXPERIENCIAS DE UN GRUPO DE JÓVENES QUE SE DEDICAN A DEAMBULAR EN LAS NOCHES DEL FUTURO GENERANDO ZOZOBRA ENTRE LA POBLACIÓN EMBORRACHADA: CUATRO COLEGIALES QUE PUEDEN DISFRAZARSE TANTO DE RACISTAS SANGUINARIOS DEL KKK COMO DE COMUNARIES INDÍGENES, SOLO PARA BURLARSE DE LOS TERRORES COLECTIVOS DE LOS CIUDADANOS.</p>
-                </div>
-
-                <div class="dossier-item left">
-                    <p data-i18n="syn_p5">LA PELÍCULA LLUNK'US ES ADEMÁS UNA REVERSIÓN DE LA NOVELA UNA NARANJA MECÁNICA DEL AUTOR ANTHONY BURGESS, AUNQUE ES UNA VERSIÓN MUY DISTINTA DE DISTINTAS ADAPTACIONES QUE SE HICIERON, PUES SU CONTEXTO ES LA FIESTA DE HALLOWEEN FOLKLÓRICO, DONDE LAS CRIATURAS DE LA DIABLADA SE HAN MEZCLADO CON LOS PERSONAJES DE LAS PELÍCULAS DE TERROR.</p>
-                </div>
-
-                <div class="dossier-item right">
-                    <p data-i18n="syn_p6">LA PELÍCULA LLUNK'US ES UNA EXPERIENCIA AUDIOVISUAL QUE EXPLORA UNA CIUDAD FUTURISTA DECADENTE Y SIEMPRE CHISTOSA, SIEMPRE IRÓNICA. UNA CIUDAD TOMADA POR UN ESTADO PARAMILITARIZADO, TODA BULLENTE DE MÁSCARAS, TODA CONSUMIBLE, TODA DESACRABLE.</p>
-                </div>
-
-                <div class="dossier-item full">
-                    <p data-i18n="syn_p7">FINALMENTE, LLUNK'US!, COMO DISPOSITIVO, ES UNA CELEBRACIÓN ALUCINADA DE LOS BROTES DE FUTURO QUE HABITAN EN NUESTRO ACTUAL CAOS. Y ES UNA HISTORIA DE AMIGOS CON LAS FEROMONAS A FLOR DE PIEL.</p>
-                </div>
+                <div class="dossier-item left"><p data-i18n="syn_p1">LA PAZ, BOLIVIA, AÑO 2049.</p></div>
+                <div class="dossier-item right"><p data-i18n="syn_p2">LAS COSAS SON MUY SIMILARES, PERO UN POCO MÁS CAÓTICAS, Y TODO POR CULPA DE ESTOS MALDITOS JÓVENES QUE NO RESPETAN A SUS VIEJOS. MALDITOS, MALDITOS TIEMPOS QUE NOS HA TOCADO VIDIR.</p></div>
+                <div class="dossier-item left"><p data-i18n="syn_p3">DE ALGUNA FORMA SE HAN SOLUCIONADO LAS CRISIS QUE AQUEJABAN AL PAÍS. PERO SIGUEN SUELTOS LOS LLUNK'US: LOS FUNCIONARIOS DE CIVIL SEMBRANDO EL CAOS. Y SIGUEN SUELTOS A PESAR DE QUE YA NO RESPETAN NI A SUS PROPIOS SUPERIORES, Y SON Más BIEN KUSILLOS SANGUINARIOS.</p></div>
+                <div class="dossier-item right"><p data-i18n="syn_p4">LA PELÍCULA LLUNK'US! SIGUE LAS EXPERIENCIAS DE UN GRUPO DE JÓVENES QUE SE DEDICAN A DEAMBULAR EN LAS NOCHES DEL FUTURO GENERANDO ZOZOBRA ENTRE LA POBLACIÓN EMBORRACHADA: CUATRO COLEGIALES QUE PUEDEN DISFRAZARSE TANTO DE RACISTAS SANGUINARIOS DEL KKK COMO DE COMUNARIES INDÍGENES, SOLO PARA BURLARSE DE LOS TERRORES COLECTIVOS DE LOS CIUDADANOS.</p></div>
+                <div class="dossier-item left"><p data-i18n="syn_p5">LA PELÍCULA LLUNK'US ES ADEMÁS UNA REVERSIÓN DE LA NOVELA UNA NARANJA MECÁNICA DEL AUTOR ANTHONY BURGESS, AUNQUE ES UNA VERSIÓN MUY DISTINTA DE DISTINTAS ADAPTACIONES QUE SE HICIERON, PUES SU CONTEXTO ES LA FIESTA DE HALLOWEEN FOLKLÓRICO, DONDE LAS CRIATURAS DE LA DIABLADA SE HAN MEZCLADO CON LOS PERSONAJES DE LAS PELÍCULAS DE TERROR.</p></div>
+                <div class="dossier-item right"><p data-i18n="syn_p6">LA PELÍCULA LLUNK'US ES UNA EXPERIENCIA AUDIOVISUAL QUE EXPLORA UNA CIUDAD FUTURISTA DECADENTE Y SIEMPRE CHISTOSA, SIEMPRE IRÓNICA. UNA CIUDAD TOMADA POR UN ESTADO PARAMILITARIZADO, TODA BULLENTE DE MÁSCARAS, TODA CONSUMIBLE, TODA DESACRABLE.</p></div>
+                <div class="dossier-item full"><p data-i18n="syn_p7">FINALMENTE, LLUNK'US!, COMO DISPOSITIVO, ES UNA CELEBRACIÓN ALUCINADA DE LOS BROTES DE FUTURO QUE HABITAN EN NUESTRO ACTUAL CAOS. Y ES UNA HISTORIA DE AMIGOS CON LAS FEROMONAS A FLOR DE PIEL.</p></div>
             </div>
 
             <hr style="border: 0; border-top: 1px solid var(--titulos); margin: 60px 0;">
 
             <section id="criticas">
                 <h2 data-i18n="sec_criticas" style="text-align: left; margin-bottom: 60px;">CITAS CRÍTICAS</h2>
-                
                 <div class="testimonials-container">
-                    <div class="testimonial-item">
-                        <p class="quote-text" data-i18n="quote_1">"ESE FUTURO PARECE DEL PASADO"</p>
-                        <p class="quote-author">— ÓSCAR SORIA</p>
-                    </div>
-
-                    <div class="testimonial-item">
-                        <p class="quote-text" data-i18n="quote_2">"DOPAMINA, DOPAMINA, DOPAMINA... OH ASBESTOS!"</p>
-                        <p class="quote-author">— FAUSTO REINAGA</p>
-                    </div>
-
-                    <div class="testimonial-item">
-                        <p class="quote-text" data-i18n="quote_3">"LA INFINITA GRACIA DEL BOLIVIANO PROMEDIO EN EL FUTURISMO DE NUESTRAS CIUDADES DE PIEDRA"</p>
-                        <p class="quote-author">— FRANZ TAMAYO</p>
-                    </div>
-
-                    <div class="testimonial-item">
-                        <p class="quote-text" data-i18n="quote_4">"EL CEMENTERIO DE ELEFANTES PARA JOVENCITAS EN TUSSI"</p>
-                        <p class="quote-author">— SAMUEL DM</p>
-                    </div>
-
-                    <div class="testimonial-item">
-                        <p class="quote-text" data-i18n="quote_5">"QUIÉN DIRÍA QUE LAS PERRAS TIENEN OPINIONES POLÍTICAS?"</p>
-                        <p class="quote-author">— WINNER ZEBALLOS</p>
-                    </div>
-
-                    <div class="testimonial-item">
-                        <p class="quote-text" data-i18n="quote_6">"ALCOHOL CAIMÁN CON CHICOLAC: EL BAILEYS ANDINO. UNA DE LAS RECETAS QUE ME LLEVO DE ESTA PELÍCULA."</p>
-                        <p class="quote-author">— JORGE ZANJINEZ</p>
-                    </div>
-
-                    <div class="testimonial-item">
-                        <p class="quote-text" data-i18n="quote_7">"NUNCA SER UN LLUNK'U DEL OFICIALISMO SE HA VISTO MÁS COOL, YA QUISIERA SER YO FUERZA BRUTA DEL FUTURO. ESTOS ESTÁN GLORIFICANDO AL LUMPENPROLETARIADO".</p>
-                        <p class="quote-author">— MARÍA JESÚS GALINDO</p>
-                    </div>
-
-                    <div class="testimonial-item special-alert">
-                        <p class="quote-text" data-i18n="quote_8">"¡CANCELEN LLUNK'US! ¡POR FAVOR! ¡ES UNA ABERRACIÓN!"</p>
-                        <p class="quote-author">— UNA LLUNK'U</p>
-                    </div>
+                    <div class="testimonial-item"><p class="quote-text" data-i18n="quote_1">"ESE FUTURO PARECE DEL PASADO"</p><p class="quote-author">— ÓSCAR SORIA</p></div>
+                    <div class="testimonial-item"><p class="quote-text" data-i18n="quote_2">"DOPAMINA, DOPAMINA, DOPAMINA... OH ASBESTOS!"</p><p class="quote-author">— FAUSTO REINAGA</p></div>
+                    <div class="testimonial-item"><p class="quote-text" data-i18n="quote_3">"LA INFINITA GRACIA DEL BOLIVIANO PROMEDIO EN EL FUTURISMO DE NUESTRAS CIUDADES DE PIEDRA"</p><p class="quote-author">— FRANZ TAMAYO</p></div>
+                    <div class="testimonial-item"><p class="quote-text" data-i18n="quote_4">"EL CEMENTERIO DE ELEFANTES PARA JOVENCITAS EN TUSSI"</p><p class="quote-author">— SAMUEL DM</p></div>
+                    <div class="testimonial-item"><p class="quote-text" data-i18n="quote_5">"QUIÉN DIRÍA QUE LAS PERRAS TIENEN OPINIONES POLÍTICAS?"</p><p class="quote-author">— WINNER ZEBALLOS</p></div>
+                    <div class="testimonial-item"><p class="quote-text" data-i18n="quote_6">"ALCOHOL CAIMÁN CON CHICOLAC: EL BAILEYS ANDINO. UNA DE LAS RECETAS QUE ME LLEVO DE ESTA PELÍCULA."</p><p class="quote-author">— JORGE ZANJINEZ</p></div>
+                    <div class="testimonial-item"><p class="quote-text" data-i18n="quote_7">"NUNCA SER UN LLUNK'U DEL OFICIALISMO SE HA VISTO MÁS COOL, YA QUISIERA SER YO FUERZA BRUTA DEL FUTURO. ESTOS ESTÁN GLORIFICANDO AL LUMPENPROLETARIADO".</p><p class="quote-author">— MARÍA JESÚS GALINDO</p></div>
+                    <div class="testimonial-item special-alert"><p class="quote-text" data-i18n="quote_8">"¡CANCELEN LLUNK'US! ¡POR FAVOR! ¡ES UNA ABERRACIÓN!"</p><p class="quote-author">— UNA LLUNK'U</p></div>
                 </div>
             </section>
 
@@ -603,61 +325,20 @@
                 <div class="crew-category">
                     <h3 class="role-title" data-i18n="role_cast">LLUNK'US SON</h3>
                     <div class="names-list">
-                        <span>ETHAN OLMOS</span>
-                        <span>PAVLO OLMOS</span>
-                        <span>ALVARO CABRERA</span>
-                        <span>SAMUEL ARCE</span>
-                        <span>JUAN CARLOS PÉREZ</span>
-                        <span>WINNER ZEBALLOS</span>
+                        <span>ETHAN OLMOS</span> <span>PAVLO OLMOS</span> <span>ALVARO CABRERA</span>
+                        <span>SAMUEL ARCE</span> <span>JUAN CARLOS PÉREZ</span> <span>WINNER ZEBALLOS</span>
                     </div>
                 </div>
 
                 <div class="crew-grid">
-                    <div class="crew-item">
-                        <span class="role" data-i18n="role_cam">CÁMARAS</span>
-                        <span class="name">BORIS GONZALES</span>
-                        <span class="name">LUCIANA DECKER</span>
-                        <span class="name">GILMAR GONZALES</span>
-                    </div>
-
-                    <div class="crew-item">
-                        <span class="role" data-i18n="role_sound">SONIDO</span>
-                        <span class="name">MAYRA OCHOA</span>
-                        <span class="name">CARLOS GUTIERREZ</span>
-                    </div>
-
-                    <div class="crew-item">
-                        <span class="role" data-i18n="role_mix">MEZCLA 5.1</span>
-                        <span class="name">OMAR CORRALES</span>
-                    </div>
-
-                    <div class="crew-item">
-                        <span class="role" data-i18n="role_wardrobe">VESTUARIO</span>
-                        <span class="name">OUns4fe We4r</span>
-                    </div>
-
-                    <div class="crew-item">
-                        <span class="role" data-i18n="role_music">MUSICA</span>
-                        <span class="name">DJCASCO</span>
-                    </div>
-
-                    <div class="crew-item">
-                        <span class="role" data-i18n="role_editing">MONTAJE</span>
-                        <span class="name">GILMAR GONZALES</span>
-                        <span class="name">CARLOS GUTIERREZ</span>
-                    </div>
-
-                    <div class="crew-item">
-                        <span class="role" data-i18n="role_prod">PRODUCCION</span>
-                        <span class="name">GILMAR GONZALES</span>
-                        <span class="name">CARLOS GUTIERREZ</span>
-                    </div>
-
-                    <div class="crew-item">
-                        <span class="role" data-i18n="role_company">PRODUCTORA</span>
-                        <span class="name">CIENMUERTES PRODUCCIONES</span>
-                        <span class="name">GERONTOCRACIA PRODUCCIONES</span>
-                    </div>
+                    <div class="crew-item"><span class="role" data-i18n="role_cam">CÁMARAS</span><span class="name">BORIS GONZALES</span><span class="name">LUCIANA DECKER</span><span class="name">GILMAR GONZALES</span></div>
+                    <div class="crew-item"><span class="role" data-i18n="role_sound">SONIDO</span><span class="name">MAYRA OCHOA</span><span class="name">CARLOS GUTIERREZ</span></div>
+                    <div class="crew-item"><span class="role" data-i18n="role_mix">MEZCLA 5.1</span><span class="name">OMAR CORRALES</span></div>
+                    <div class="crew-item"><span class="role" data-i18n="role_wardrobe">VESTUARIO</span><span class="name">OUns4fe We4r</span></div>
+                    <div class="crew-item"><span class="role" data-i18n="role_music">MUSICA</span><span class="name">DJCASCO</span></div>
+                    <div class="crew-item"><span class="role" data-i18n="role_editing">MONTAJE</span><span class="name">GILMAR GONZALES</span><span class="name">CARLOS GUTIERREZ</span></div>
+                    <div class="crew-item"><span class="role" data-i18n="role_prod">PRODUCCION</span><span class="name">GILMAR GONZALES</span><span class="name">CARLOS GUTIERREZ</span></div>
+                    <div class="crew-item"><span class="role" data-i18n="role_company">PRODUCTORA</span><span class="name">CIENMUERTES PRODUCCIONES</span><span class="name">GERONTOCRACIA PRODUCCIONES</span></div>
                 </div>
 
                 <div class="director-feature">
@@ -670,15 +351,15 @@
 
     <footer>
         <div class="footer-content">
-            <a href="#" data-i18n="footer_contact">Contáctanos: esteesmiemail@gmail.com carlosgutierrezquiroga@gmail.com</a>
-            <a href="#" data-i18n="footer_work">Trabaja con nosotros</a>
-            <div class="socials" style="color: var(--sub-btn); font-weight: bold;">Instagram | YouTube | X</div>
+            <p data-i18n="footer_contact">Contáctanos: esteesmiemail@gmail.com | carlosgutierrezquiroga@gmail.com</p>
         </div>
     </footer>
 
     <div id="lightbox" onclick="closeLightbox()">
         <img id="lightbox-img" src="" alt="Ampliada">
     </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
 
     <script>
         // --- 1. LÓGICA DEL SLIDER FULLSCREEN ---
@@ -697,8 +378,7 @@
             es: {
                 nav_videos: "Videos", nav_fotos: "Fotos", nav_texto: "Comentarios", nav_equipo: "Equipo",
                 sec_videos: "Videos", tab_trailers: "Trailers", tab_movie: "Película", tab_previews: "Adelantos",
-                sec_fotos: "Fotos", sec_texto: "Comentarios",
-                sec_sinopsis: "SINOPSIS", sec_criticas: "CITAS CRÍTICAS", sec_equipo: "EQUIPO & ELENCO",
+                sec_fotos: "Fotos", sec_texto: "Comentarios", sec_sinopsis: "SINOPSIS", sec_criticas: "CITAS CRÍTICAS", sec_equipo: "EQUIPO & ELENCO",
                 
                 syn_p1: "LA PAZ, BOLIVIA, AÑO 2049.",
                 syn_p2: "LAS COSAS SON MUY SIMILARES, PERO UN POCO MÁS CAÓTICAS, Y TODO POR CULPA DE ESTOS MALDITOS JÓVENES QUE NO RESPETAN A SUS VIEJOS. MALDITOS, MALDITOS TIEMPOS QUE NOS HA TOCADO VIDIR.",
@@ -708,25 +388,20 @@
                 syn_p6: "LA PELÍCULA LLUNK'US ES UNA EXPERIENCIA AUDIOVISUAL QUE EXPLORA UNA CIUDAD FUTURISTA DECADENTE Y SIEMPRE CHISTOSA, SIEMPRE IRÓNICA. UNA CIUDAD TOMADA POR UN ESTADO PARAMILITARIZADO, TODA BULLENTE DE MÁSCARAS, TODA CONSUMIBLE, TODA DESACRABLE.",
                 syn_p7: "FINALMENTE, LLUNK'US!, COMO DISPOSITIVO, ES UNA CELEBRACIÓN ALUCINADA DE LOS BROTES DE FUTURO QUE HABITAN EN NUESTRO ACTUAL CAOS. Y ES UNA HISTORIA DE AMIGOS CON LAS FEROMONAS A FLOR DE PIEL.",
                 
-                quote_1: "\"ESE FUTURO PARECE DEL PASADO\"",
-                quote_2: "\"DOPAMINA, DOPAMINA, DOPAMINA... OH ASBESTOS!\"",
-                quote_3: "\"LA INFINITA GRACIA DEL BOLIVIANO PROMEDIO EN EL FUTURISMO DE NUESTRAS CIUDADES DE PIEDRA\"",
-                quote_4: "\"EL CEMENTERIO DE ELEFANTES PARA JOVENCITAS EN TUSSI\"",
-                quote_5: "\"QUIÉN DIRÍA QUE LAS PERRAS TIENEN OPINIONES POLÍTICAS?\"",
-                quote_6: "\"ALCOHOL CAIMÁN CON CHICOLAC: EL BAILEYS ANDINO. UNA DE LAS RECETAS QUE ME LLEVO DE ESTA PELÍCULA.\"",
-                quote_7: "\"NUNCA SER UN LLUNK'U DEL OFICIALISMO SE HA VISTO MÁS COOL, YA QUISIERA SER YO FUERZA BRUTA DEL FUTURO. ESTOS ESTÁN GLORIFICANDO AL LUMPENPROLETARIADO\".",
-                quote_8: "\"¡CANCELEN LLUNK'US! ¡POR FAVOR! ¡ES UNA ABERRACIÓN!\"",
+                quote_1: "\"ESE FUTURO PARECE DEL PASADO\"", quote_2: "\"DOPAMINA, DOPAMINA, DOPAMINA... OH ASBESTOS!\"", quote_3: "\"LA INFINITA GRACIA DEL BOLIVIANO PROMEDIO EN EL FUTURISMO DE NUESTRAS CIUDADES DE PIEDRA\"", quote_4: "\"EL CEMENTERIO DE ELEFANTES PARA JOVENCITAS EN TUSSI\"", quote_5: "\"QUIÉN DIRÍA QUE LAS PERRAS TIENEN OPINIONES POLÍTICAS?\"", quote_6: "\"ALCOHOL CAIMÁN CON CHICOLAC: EL BAILEYS ANDINO. UNA DE LAS RECETAS QUE ME LLEVO DE ESTA PELÍCULA.\"", quote_7: "\"NUNCA SER UN LLUNK'U DEL OFICIALISMO SE HA VISTO MÁS COOL, YA QUISIERA SER YO FUERZA BRUTA DEL FUTURO. ESTOS ESTÁN GLORIFICANDO AL LUMPENPROLETARIADO\".", quote_8: "\"¡CANCELEN LLUNK'US! ¡POR FAVOR! ¡ES UNA ABERRACIÓN!\"",
 
                 role_cast: "LLUNK'US SON", role_cam: "CÁMARAS", role_sound: "SONIDO", role_mix: "MEZCLA 5.1",
                 role_wardrobe: "VESTUARIO", role_music: "MUSICA", role_editing: "MONTAJE", role_prod: "PRODUCCION",
                 role_company: "PRODUCTORA", role_director: "DIRIGIDA POR",
-                footer_contact: "Contáctanos: esteesmiemail@gmail.com carlosgutierrezquiroga@gmail.com", footer_work: "Trabaja con nosotros"
+                
+                footer_contact: "Contáctanos: esteesmiemail@gmail.com | carlosgutierrezquiroga@gmail.com",
+                music_tooltip: "Haz clic para mejorar la experiencia",
+                music_loading: "Cargando audio..."
             },
             en: {
                 nav_videos: "Videos", nav_fotos: "Photos", nav_texto: "Comments", nav_equipo: "Team",
                 sec_videos: "Videos", tab_trailers: "Trailers", tab_movie: "Movie", tab_previews: "Previews",
-                sec_fotos: "Photos", sec_texto: "Comments",
-                sec_sinopsis: "SYNOPSIS", sec_criticas: "CRITICAL QUOTES", sec_equipo: "CREW & CAST",
+                sec_fotos: "Photos", sec_texto: "Comments", sec_sinopsis: "SYNOPSIS", sec_criticas: "CRITICAL QUOTES", sec_equipo: "CREW & CAST",
                 
                 syn_p1: "LA PAZ, BOLIVIA, YEAR 2049.",
                 syn_p2: "THINGS ARE VERY SIMILAR, BUT A BIT MORE CHAOTIC, AND ALL BECAUSE OF THESE DAMN YOUTHS WHO DON'T RESPECT THEIR ELDERS. DAMN, DAMN TIMES WE HAVE TO LIVE IN.",
@@ -736,19 +411,15 @@
                 syn_p6: "THE MOVIE LLUNK'US IS AN AUDIOVISUAL EXPERIENCE THAT EXPLORES A DECADENT AND ALWAYS FUNNY, ALWAYS IRONIC FUTURISTIC CITY. A CITY TAKEN BY A PARAMILITARIZED STATE, ALL SEETHING WITH MASKS, ALL CONSUMABLE, ALL DESECRATABLE.",
                 syn_p7: "FINALLY, LLUNK'US!, AS A DEVICE, IS A HALLUCINATED CELEBRATION OF THE SPROUTS OF THE FUTURE THAT INHABIT OUR CURRENT CHAOS. AND IT IS A STORY OF FRIENDS WITH PHEROMONES ON THE SURFACE.",
 
-                quote_1: "\"THAT FUTURE SEEMS FROM THE PAST\"",
-                quote_2: "\"DOPAMINE, DOPAMINE, DOPAMINE... OH ASBESTOS!\"",
-                quote_3: "\"THE INFINITE GRACE OF THE AVERAGE BOLIVIAN IN THE FUTURISM OF OUR STONE CITIES\"",
-                quote_4: "\"THE ELEPHANT CEMETERY FOR YOUNG GIRLS ON TUSSI\"",
-                quote_5: "\"WHO WOULD SAY BITCHES HAVE POLITICAL OPINIONS?\"",
-                quote_6: "\"CAIMAN ALCOHOL WITH CHICOLAC: THE ANDEAN BAILEYS. ONE OF THE RECIPES I TAKE FROM THIS MOVIE.\"",
-                quote_7: "\"NEVER HAS BEING A PRO-GOVERNMENT LLUNK'U LOOKED COOLER, I WISH I WERE THE BRUTE FORCE OF THE FUTURE. THEY ARE GLORIFYING THE LUMPENPROLETARIAT.\"",
-                quote_8: "\"CANCEL LLUNK'US! PLEASE! IT'S AN ABERRATION!\"",
+                quote_1: "\"THAT FUTURE SEEMS FROM THE PAST\"", quote_2: "\"DOPAMINE, DOPAMINE, DOPAMINE... OH ASBESTOS!\"", quote_3: "\"THE INFINITE GRACE OF THE AVERAGE BOLIVIAN IN THE FUTURISM OF OUR STONE CITIES\"", quote_4: "\"THE ELEPHANT CEMETERY FOR YOUNG GIRLS ON TUSSI\"", quote_5: "\"WHO WOULD SAY BITCHES HAVE POLITICAL OPINIONS?\"", quote_6: "\"CAIMAN ALCOHOL WITH CHICOLAC: THE ANDEAN BAILEYS. ONE OF THE RECIPES I TAKE FROM THIS MOVIE.\"", quote_7: "\"NEVER HAS BEING A PRO-GOVERNMENT LLUNK'U LOOKED COOLER, I WISH I WERE THE BRUTE FORCE OF THE FUTURE. THEY ARE GLORIFYING THE LUMPENPROLETARIAT.\"", quote_8: "\"CANCEL LLUNK'US! PLEASE! IT'S AN ABERRATION!\"",
 
                 role_cast: "LLUNK'US ARE", role_cam: "CAMERAS", role_sound: "SOUND", role_mix: "5.1 MIX",
                 role_wardrobe: "WARDROBE", role_music: "MUSIC", role_editing: "EDITING", role_prod: "PRODUCTION",
                 role_company: "PRODUCTION COMPANY", role_director: "DIRECTED BY",
-                footer_contact: "Contact us: esteesmiemail@gmail.com carlosgutierrezquiroga@gmail.com", footer_work: "Work with us"
+                
+                footer_contact: "Contact us: esteesmiemail@gmail.com | carlosgutierrezquiroga@gmail.com",
+                music_tooltip: "Click to enhance the experience",
+                music_loading: "Loading audio..."
             }
         };
 
@@ -756,6 +427,10 @@
             document.querySelectorAll('[data-i18n]').forEach(element => {
                 const key = element.getAttribute('data-i18n');
                 if (translations[lang][key]) element.textContent = translations[lang][key];
+            });
+            document.querySelectorAll('[data-i18n-title]').forEach(element => {
+                const key = element.getAttribute('data-i18n-title');
+                if (translations[lang][key]) element.title = translations[lang][key];
             });
             document.getElementById('btn-es').classList.remove('active');
             document.getElementById('btn-en').classList.remove('active');
@@ -766,7 +441,6 @@
         function showVideoTab(btnElement, tabId) {
             document.querySelectorAll('.video-grid').forEach(grid => grid.classList.remove('active'));
             document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
-            
             document.getElementById('tab-' + tabId).classList.add('active');
             btnElement.classList.add('active');
         }
@@ -776,10 +450,95 @@
             document.getElementById('lightbox-img').src = src;
             document.getElementById('lightbox').classList.add('active');
         }
-
         function closeLightbox() {
             document.getElementById('lightbox').classList.remove('active');
         }
+
+        // --- 5. LÓGICA DE YOUTUBE INVISIBLE Y ESTADOS DE CARGA ---
+        var ytPlayer;
+        var isMusicPlaying = false;
+        var apiReady = false;
+
+        // Esta función la ejecuta YouTube automáticamente cuando carga su código
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('youtube-audio-player', {
+                height: '1', width: '1',
+                videoId: '9i47roTXnOM', // ID de tu video
+                playerVars: {
+                    'autoplay': 0, 'controls': 0, 'disablekb': 1, 'fs': 0, 'playsinline': 1, 'loop': 1, 'playlist': '9i47roTXnOM' 
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        // CUANDO YOUTUBE YA CARGÓ Y ESTÁ LISTO PARA REPRODUCIR
+        function onPlayerReady(event) {
+            apiReady = true;
+            const btn = document.getElementById('floating-music-btn');
+            const icon = document.getElementById('music-icon');
+            const tooltip = document.getElementById('music-tooltip-text');
+            
+            // Quitamos el bloqueo y el spinner de carga
+            btn.classList.remove('disabled');
+            icon.textContent = '🔇'; // Ponemos la bocina silenciada inicial
+            
+            // Actualizamos el texto flotante según el idioma actual
+            const currentLang = document.getElementById('btn-en').classList.contains('active') ? 'en' : 'es';
+            tooltip.textContent = translations[currentLang]['music_tooltip'];
+            tooltip.setAttribute('data-i18n', 'music_tooltip');
+        }
+
+        // CUANDO EL AUDIO CAMBIA (PLAY/PAUSA)
+        function onPlayerStateChange(event) {
+            const btn = document.getElementById('floating-music-btn');
+            const icon = document.getElementById('music-icon');
+            
+            if (event.data == YT.PlayerState.PLAYING) {
+                isMusicPlaying = true;
+                icon.textContent = '🔊'; // Cambia a Sonando
+                btn.classList.add('playing');
+            } else {
+                isMusicPlaying = false;
+                icon.textContent = '🔇'; // Cambia a Silencio
+                btn.classList.remove('playing');
+            }
+        }
+
+        // Alternar sonido manualmente con el botón flotante
+        function toggleYouTubeAudio() {
+            if (!apiReady) return; // Si no ha cargado, ignorar el clic
+            var state = ytPlayer.getPlayerState();
+            if (state === YT.PlayerState.PLAYING) {
+                ytPlayer.pauseVideo();
+            } else {
+                ytPlayer.playVideo();
+            }
+        }
+
+        // Activa la música al primer clic en cualquier lugar de la página
+        document.body.addEventListener('click', function(event) {
+            if (!apiReady) return;
+            // Prevenir doble disparo si clican directo en el botón o en un tráiler
+            if (!event.target.closest('#floating-music-btn') && event.target.tagName !== 'IFRAME') {
+                if (!isMusicPlaying) {
+                    ytPlayer.playVideo();
+                }
+            }
+        }, { once: true });
+
+        // TRUCO NINJA: Pausar YouTube si el usuario hace clic en los Trailers de Drive
+        window.addEventListener('blur', function() {
+            const active = document.activeElement;
+            if (active && active.tagName === 'IFRAME') {
+                if (isMusicPlaying && ytPlayer) {
+                    ytPlayer.pauseVideo();
+                }
+            }
+        });
+
     </script>
 </body>
 </html>
